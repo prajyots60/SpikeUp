@@ -1,10 +1,11 @@
-import { getWebinarAttendance } from "@/actions/attendance";
+// import { getWebinarAttendance } from "@/actions/attendance";
 import PageHeader from "@/components/ReusableComponents/PageHeader";
-import { HomeIcon, ListTree, User2, Users2 } from "lucide-react";
+import { HomeIcon, ListTree, Users2 } from "lucide-react";
 import React from "react";
 import { formatColumnTitle } from "./_components/utils";
 import { AttendedTypeEnum } from "@prisma/client";
 import PipelineLayout from "./_components/PipelineLayout";
+import { getWebinarAttendance } from "./_tests_/data";
 
 type Props = {
   params: Promise<{
