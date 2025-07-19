@@ -13,10 +13,13 @@ import { Basic } from "next/font/google";
 import BasicInfoStep from "./BasicInfoStep";
 import CTAStep from "./CTAStep";
 import AdditionalInfoStep from "./AdditionalInfoStep";
+import Stripe from "stripe";
 
-type Props = {};
+type Props = {
+  stripeProducts: Stripe.Product[] | [];
+};
 
-const CreateWebinarButton = (props: Props) => {
+const CreateWebinarButton = ({ stripeProducts }: Props) => {
   const { isModalOpen, setModalOpen, isComplete, setComplete } =
     useWebinarStore();
 
@@ -33,7 +36,7 @@ const CreateWebinarButton = (props: Props) => {
       id: "cta",
       title: "Call to Action",
       description: "Please provide end to end CTA for your webinar",
-      component: <CTAStep assistants={[]} stripeProducts={[]} />,
+      component: <CTAStep assistants={[]} stripeProducts={stripeProducts} />,
     },
     {
       id: "additionalInfo",
