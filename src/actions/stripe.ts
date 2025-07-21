@@ -1,9 +1,10 @@
 "use server";
 
-import { error } from "console";
 import { OnAuthenticateUser } from "./auth";
-import { stat } from "fs";
 import { stripe } from "@/lib/stripe/index";
+import Stripe from "stripe";
+import { prismaClient } from "@/lib/prismaClient";
+import { subscriptionPriceId } from "@/lib/data";
 
 export const getAllProductsFromStripe = async () => {
   try {
@@ -45,5 +46,77 @@ export const getAllProductsFromStripe = async () => {
       status: 500,
       success: false,
     };
+  }
+};
+
+export const onGetStripeClientSecret = async (
+  email: string,
+  userId: string
+) => {
+  try {
+    let customer: Stripe.Customer;
+    const existingCustomer = await stripe.customers.list({ email: email });
+    if (existingCustomer.data.length > 0) {
+      customer = existingCustomer.data[0];
+    } else {
+      customer = await stripe.customers.create({
+        email: email,
+        metadata: {
+          userId: userId,
+        },
+      });
+    }
+
+    await prismaClient.user.update({
+      where: { id: userId },
+      data: {
+        stripeCustomerId: customer.id,
+      },
+    });
+
+    const subscription = await stripe.subscriptions.create({
+      customer: customer.id,
+      items: [{ price: subscriptionPriceId }],
+      payment_behavior: "default_incomplete",
+      expand: ["latest_invoice.payment_intent"],
+      metadata: {
+        userId: userId,
+        email: email,
+        subscriptionPriceId: subscriptionPriceId,
+      },
+    });
+
+    const paymentIntent = (subscription.latest_invoice as Stripe.Invoice)
+      .payment_intent as Stripe.PaymentIntent;
+
+    return {
+      secret: paymentIntent.client_secret,
+      success: true,
+      status: 200,
+      customerId: customer.id,
+    };
+  } catch (error) {
+    console.error("Error creating subscription:", error);
+    return {
+      error: "Failed to create subscription",
+      status: 500,
+      success: false,
+    };
+  }
+};
+
+export const updateSubscriptionEvent = async (
+  subscription: Stripe.Subscription
+) => {
+  try {
+    const userId = subscription.metadata.userId;
+    await prismaClient.user.update({
+      where: { id: userId },
+      data: {
+        subscription: subscription.status === "active" ? true : false,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating subscription:", error);
   }
 };

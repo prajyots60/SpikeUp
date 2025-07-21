@@ -4,6 +4,7 @@ import { WebinarFormState } from "@/store/useWebinarStore";
 import { OnAuthenticateUser } from "./auth";
 import { prismaClient } from "@/lib/prismaClient";
 import { revalidatePath } from "next/cache";
+import { th } from "date-fns/locale";
 
 function combineDateTime(
   date: Date,
@@ -115,5 +116,28 @@ export const getWebinarsByPresenterId = async (presenterId: string) => {
   } catch (error) {
     console.error("Error fetching webinars:", error);
     return [];
+  }
+};
+
+export const getWebinarById = async (webinarId: string) => {
+  try {
+    const webinar = await prismaClient.webinar.findUnique({
+      where: { id: webinarId },
+      include: {
+        presenter: {
+          select: {
+            id: true,
+            name: true,
+            stripeConnectId: true,
+            profileImage: true,
+          },
+        },
+      },
+    });
+
+    return webinar;
+  } catch (error) {
+    console.error("Error fetching webinar by ID:", error);
+    throw new Error("Webinar not found");
   }
 };

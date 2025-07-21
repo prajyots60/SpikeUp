@@ -9,18 +9,18 @@ import { useWebinarStore } from "@/store/useWebinarStore";
 import { PlusIcon } from "lucide-react";
 import React, { useState } from "react";
 import MultiStepForm from "./MultiStepForm";
-import { Basic } from "next/font/google";
 import BasicInfoStep from "./BasicInfoStep";
 import CTAStep from "./CTAStep";
 import AdditionalInfoStep from "./AdditionalInfoStep";
 import Stripe from "stripe";
+import SuccessStep from "./SuccessStep";
 
 type Props = {
   stripeProducts: Stripe.Product[] | [];
 };
 
 const CreateWebinarButton = ({ stripeProducts }: Props) => {
-  const { isModalOpen, setModalOpen, isComplete, setComplete } =
+  const { isModalOpen, setModalOpen, isComplete, setComplete, resetForm } =
     useWebinarStore();
 
   const [webinarLink, setWebinarLink] = useState("");
@@ -52,6 +52,10 @@ const CreateWebinarButton = ({ stripeProducts }: Props) => {
       `${process.env.NEXT_PUBLIC_BASE_URL}/live-webinar/${webinarId}`
     );
   };
+
+  const handleCreateNew = () => {
+    resetForm();
+  };
   return (
     <Dialog open={isModalOpen} onOpenChange={setModalOpen}>
       <DialogTrigger asChild>
@@ -67,6 +71,11 @@ const CreateWebinarButton = ({ stripeProducts }: Props) => {
         {isComplete ? (
           <div className="bg-muted text-primary rounded-lg overflow-hidden">
             <DialogTitle className="sr-only">Webinar Created</DialogTitle>
+            <SuccessStep
+              webinarLink={webinarLink}
+              onCreateNew={handleCreateNew}
+              onClose={() => setModalOpen(false)}
+            />
           </div>
         ) : (
           <>

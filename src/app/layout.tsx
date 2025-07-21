@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Manrope} from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
-
+import { Toaster } from "sonner";
 
 const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-manrope"
+  variable: "--font-manrope",
 });
 
 export const metadata: Metadata = {
@@ -22,21 +22,22 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-    <html lang="en"  suppressHydrationWarning>
-      <body
-        className={`${manrope.variable} antialiased`}
-        suppressHydrationWarning
-      >
-        <ThemeProvider
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`${manrope.variable} antialiased`}
+          suppressHydrationWarning
+        >
+          <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >
-        {children}
-        </ThemeProvider>
-      </body>
-    </html>
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }

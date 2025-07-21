@@ -87,7 +87,9 @@ const CTAStep = ({ assistants, stripeProducts }: Props) => {
         )}
       </div>
       <div className="space-y-2">
-        <Label htmlFor="tags">Tags</Label>
+        <Label htmlFor="tags">
+          Tags <span className="text-red-400">*</span>
+        </Label>
         <Input
           id="tags"
           name="tags"
