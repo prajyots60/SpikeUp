@@ -1,5 +1,6 @@
 import { User, Webinar } from "@prisma/client";
 import React from "react";
+import WebinarUpcomingState from "./UpcomingWebinar/WebinarUpcomingState";
 
 type Props = {
   user: User | null;
@@ -18,7 +19,15 @@ const RenderWebinar = ({
   error,
   webinar,
 }: Props) => {
-  return <div>RenderWebinar</div>;
+  return (
+    <React.Fragment>
+      {webinar.webinarStatus === "SCHEDULED" && user ? (
+        <WebinarUpcomingState webinar={webinar} user={user} />
+      ) : (
+        ""
+      )}
+    </React.Fragment>
+  );
 };
 
 export default RenderWebinar;

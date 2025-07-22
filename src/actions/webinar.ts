@@ -5,6 +5,7 @@ import { OnAuthenticateUser } from "./auth";
 import { prismaClient } from "@/lib/prismaClient";
 import { revalidatePath } from "next/cache";
 import { th } from "date-fns/locale";
+import { WebinarStatusEnum } from "@prisma/client";
 
 function combineDateTime(
   date: Date,
@@ -139,5 +140,31 @@ export const getWebinarById = async (webinarId: string) => {
   } catch (error) {
     console.error("Error fetching webinar by ID:", error);
     throw new Error("Webinar not found");
+  }
+};
+
+export const changeWebinarStatus = async (
+  webinarId: string,
+  status: WebinarStatusEnum
+) => {
+  try {
+    const webinar = await prismaClient.webinar.update({
+      where: { id: webinarId },
+      data: { webinarStatus: status },
+    });
+
+    return {
+      status: 200,
+      message: "Webinar status updated successfully",
+      webinar,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Error changing webinar status:", error);
+    return {
+      status: 500,
+      message: "Internal server error while changing webinar status",
+      success: false,
+    };
   }
 };

@@ -3,6 +3,7 @@
 import { prismaClient } from "@/lib/prismaClient";
 import { AttendanceData } from "@/lib/type";
 import { AttendedTypeEnum, CtaTypeEnum } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 export const getWebinarAttendance = async (
   webinarId: string,
@@ -134,6 +135,96 @@ export const getWebinarAttendance = async (
       success: false,
       status: 500,
       message: "Internal server error",
+    };
+  }
+};
+
+export const registerAttendee = async ({
+  webinarId,
+  email,
+  name,
+}: {
+  webinarId: string;
+  email: string;
+  name: string;
+}) => {
+  try {
+    if (!webinarId || !email || !name) {
+      return {
+        error: "Missing required fields",
+        status: 400,
+        success: false,
+      };
+    }
+
+    const webinar = await prismaClient.webinar.findUnique({
+      where: { id: webinarId },
+    });
+    if (!webinar) {
+      return {
+        error: "Webinar not found",
+        status: 404,
+        success: false,
+      };
+    }
+
+    let attendee = await prismaClient.attendee.findFirst({
+      where: { email },
+    });
+
+    if (!attendee) {
+      attendee = await prismaClient.attendee.create({
+        data: {
+          email,
+          name,
+        },
+      });
+    }
+
+    const existingAttendance = await prismaClient.attendance.findFirst({
+      where: {
+        attendeeId: attendee.id,
+        webinarId,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    if (existingAttendance) {
+      return {
+        success: true,
+        status: 200,
+        data: existingAttendance,
+        message: "Already registered",
+      };
+    }
+
+    const attendance = await prismaClient.attendance.create({
+      data: {
+        attendedType: AttendedTypeEnum.REGISTERED,
+        attendeeId: attendee.id,
+        webinarId,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    revalidatePath(`${webinarId}`);
+
+    return {
+      success: true,
+      status: 201,
+      data: attendance,
+      message: "Successfully registered",
+    };
+  } catch (error) {
+    console.error("Error registering attendee:", error);
+    return {
+      error: "Failed to register attendee",
+      status: 500,
+      success: false,
     };
   }
 };
