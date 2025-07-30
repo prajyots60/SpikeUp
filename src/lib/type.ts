@@ -1,4 +1,4 @@
-import { Attendee, CtaTypeEnum } from "@prisma/client";
+import { Attendee, CtaTypeEnum, User, Webinar } from "@prisma/client";
 
 export type ValidationErrors = Record<string, string>;
 
@@ -89,4 +89,8 @@ export const validateAdditionalInfo = (data: {
 export type AttendanceData = {
   count: number;
   users: Attendee[];
+};
+
+export type WebinarWithPresenter = Webinar & {
+  presenter: User;
 };

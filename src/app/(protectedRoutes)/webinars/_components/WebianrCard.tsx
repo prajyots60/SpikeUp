@@ -17,7 +17,7 @@ const WebianrCard = ({ webinar }: Props) => {
         className="w-full max-w-[350px]"
       >
         <Image
-          src={"/darkthumbnail.png"}
+          src={"/course_thumbnail.jpg"}
           alt="Webinar Thumbnail"
           width={350}
           height={200}

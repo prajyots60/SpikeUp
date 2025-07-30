@@ -35,6 +35,13 @@ export const createWebinar = async (formData: WebinarFormState) => {
       throw new Error("User not authenticated");
     }
 
+    if (!user.user.subscription) {
+      return {
+        status: 402,
+        message: "You need to have a subscription to create a webinar",
+      };
+    }
+
     const presenterId = user.user?.id;
 
     console.log("Creating webinar with data:", formData, presenterId);

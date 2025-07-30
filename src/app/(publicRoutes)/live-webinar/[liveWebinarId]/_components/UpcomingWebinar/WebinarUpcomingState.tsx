@@ -10,12 +10,11 @@ import { Calendar, Clock, Loader2 } from "lucide-react";
 import { changeWebinarStatus } from "@/actions/webinar";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { fi } from "date-fns/locale";
 import { format } from "date-fns";
 
 type Props = {
   webinar: Webinar;
-  user: User;
+  user: User | null;
 };
 
 const WebinarUpcomingState = ({ webinar, user }: Props) => {
