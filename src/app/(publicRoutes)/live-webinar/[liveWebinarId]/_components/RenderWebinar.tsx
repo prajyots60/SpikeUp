@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAttendeeStore } from "@/store/useAttendeeStore";
 import LiveStreamState from "./LiveWebinar/LiveStreamState";
 import { WebinarWithPresenter } from "@/lib/type";
+import Participant from "./Participant/Participant";
 
 type Props = {
   user: User | null;
@@ -44,12 +45,7 @@ const RenderWebinar = ({
               user={user}
             />
           ) : attendee ? (
-            // <Participant
-            //   apiKey={apiKey}
-            //   token={token}
-            //   callId={callId}
-            // />
-            "Participant Component Placeholder"
+            <Participant apiKey={apiKey} webinar={webinar} callId={callId} />
           ) : (
             <WebinarUpcomingState webinar={webinar} user={user || null} />
           )}

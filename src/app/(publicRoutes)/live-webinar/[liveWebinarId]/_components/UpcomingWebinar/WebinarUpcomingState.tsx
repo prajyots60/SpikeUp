@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import CountdownTimer from "./CountdownTimer";
 import Image from "next/image";
 import WaitListComponent from "./WaitListComponent";
-import { currentUser } from "@clerk/nextjs/server";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, Loader2 } from "lucide-react";
 import { changeWebinarStatus } from "@/actions/webinar";

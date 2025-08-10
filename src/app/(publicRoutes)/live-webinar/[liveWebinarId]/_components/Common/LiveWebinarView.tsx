@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { CtaTypeEnum } from "@prisma/client";
 import { Chat, Channel, MessageList, MessageInput } from "stream-chat-react";
 import "stream-chat-react/dist/css/v2/index.css";
+import CTADialogBox from "./CTADialogBox";
 
 type Props = {
   showChat: boolean;
@@ -30,7 +31,7 @@ const LiveWebinarView = ({
 }: Props) => {
   const [chatClient, setChatClient] = useState<StreamChat | null>(null);
   const [channel, setChannel] = useState<any>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(true);
 
   const { useParticipantCount, useParticipants } = useCallStateHooks();
   const viewerCount = useParticipantCount();
@@ -183,14 +184,14 @@ const LiveWebinarView = ({
         )}
       </div>
 
-      {/* {dialogOpen && (
+      {dialogOpen && (
         <CTADialogBox
           open={dialogOpen}
           onOpenChange={setDialogOpen}
           webinar={webinar}
           userId={userId}
         />
-      )} */}
+      )}
     </div>
   );
 };

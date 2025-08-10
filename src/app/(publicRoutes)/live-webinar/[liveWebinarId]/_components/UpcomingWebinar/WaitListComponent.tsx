@@ -114,7 +114,7 @@ const WaitListComponent = ({
         >
           {webinarStatus === WebinarStatusEnum.LIVE && (
             <span className="mr-2 h-2 w-2 bg-white rounded-full animate-pulse">
-              Join Webinar
+              {/* Join Webinar */}
             </span>
           )}
           {buttonText()}

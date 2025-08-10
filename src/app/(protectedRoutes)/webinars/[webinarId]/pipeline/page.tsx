@@ -5,7 +5,8 @@ import React from "react";
 import { formatColumnTitle } from "./_components/utils";
 import { AttendedTypeEnum } from "@prisma/client";
 import PipelineLayout from "./_components/PipelineLayout";
-import { getWebinarAttendance } from "./_tests_/data";
+import { getWebinarAttendance } from "@/actions/attendance";
+// import { getWebinarAttendance } from "./_tests_/data";
 
 type Props = {
   params: Promise<{
