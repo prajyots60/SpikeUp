@@ -56,7 +56,7 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.21 0.0059 285.89);
-  --primary-foreground:oklch(0.99 0 0);
+  --primary-foreground: oklch(0.99 0 0);
   --secondary: oklch(0.97 0.0013 286.38);
   --secondary-foreground: oklch(0.21 0.0059 285.89);
   --muted: oklch(0.97 0 0);
@@ -64,9 +64,9 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.64 0.2078 25.33);
-  --border:oklch(0.92 0.004 286.32);
+  --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.922 0 0);
-  --ring:oklch(0.21 0.0059 285.89);
+  --ring: oklch(0.21 0.0059 285.89);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -80,8 +80,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --accent-primary:oklch(0.72 0.1723 303.07);
-  --accent-secondary:oklch(0.56 0.2726 294.48);
+  --accent-primary: oklch(0.72 0.1723 303.07);
+  --accent-secondary: oklch(0.56 0.2726 294.48);
   --accent-foreground: oklch(0.21 0.0059 285.89);
 }
 
@@ -92,18 +92,18 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary:oklch(0.99 0 0);
+  --primary: oklch(0.99 0 0);
   --primary-foreground: oklch(0.21 0.0059 285.89);
   --secondary: oklch(0.18 0 0);
   --secondary-foreground: oklch(0.99 0 0);
-  --muted:oklch(0.27 0.0055 286.03);
+  --muted: oklch(0.27 0.0055 286.03);
   --muted-foreground: oklch(0.708 0 0);
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
-  --destructive:oklch(0.4 0.1331 25.72);
+  --destructive: oklch(0.4 0.1331 25.72);
   --border: oklch(0.27 0.0055 286.03);
   --input: oklch(1 0 0 / 15%);
-  --ring:oklch(0.87 0.0055 286.29);
+  --ring: oklch(0.87 0.0055 286.29);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -117,8 +117,8 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
-  --accent-primary:oklch(0.66 0.1972 300.41);
-  --accent-secondary:oklch(0.56 0.2726 294.48);
+  --accent-primary: oklch(0.66 0.1972 300.41);
+  --accent-secondary: oklch(0.56 0.2726 294.48);
   --accent-foreground: oklch(0.99 0 0);
 }
 
@@ -130,7 +130,6 @@
     @apply bg-background text-foreground;
   }
 }
-
 
 @layer utilities {
   .text-balance {
@@ -147,12 +146,49 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+
+  /* Animation delays for icon animations */
+  .animation-delay-100 {
+    animation-delay: 0.1s;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 0.2s;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 0.3s;
+  }
+
+  /* Floating animation keyframes */
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
 }
 
 .iconBackground {
   border-radius: var(--radius-rounded-md, 0.375rem);
-  border: 0.5px solid #A76EF6;
-  background: radial-gradient(80.86% 125% at 50% 45%, var(--background-bg-background-10, rgba(9, 9, 11, 0.08)) 0%, var(--background-bg-accent-secondary-100, rgba(135, 49, 255, 0.75)) 100%), linear-gradient(180deg, var(--background-bg-background, rgba(9, 9, 11, 0.50)) 60%, var(--background-bg-accent-secondary-100, rgba(135, 49, 255, 0.50)) 100%);
+  border: 0.5px solid #a76ef6;
+  background: radial-gradient(
+      80.86% 125% at 50% 45%,
+      var(--background-bg-background-10, rgba(9, 9, 11, 0.08)) 0%,
+      var(--background-bg-accent-secondary-100, rgba(135, 49, 255, 0.75)) 100%
+    ),
+    linear-gradient(
+      180deg,
+      var(--background-bg-background, rgba(9, 9, 11, 0.5)) 60%,
+      var(--background-bg-accent-secondary-100, rgba(135, 49, 255, 0.5)) 100%
+    );
 }
 
 /* Add these styles to your global CSS or create a new CSS module */
@@ -225,5 +261,3 @@
     padding: 8px;
   }
 }
-
-

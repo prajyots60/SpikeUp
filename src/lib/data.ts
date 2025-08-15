@@ -44,8 +44,8 @@ export const onBoardingSteps = [
 export const potentialCustomer = [
   {
     id: "1",
-    name: "John Doe",
-    email: "Johndoe@gmail.com",
+    name: "Prajyot Shinde",
+    email: "prajyot@gmail.com",
     clerkId: "1",
     profileImage: "/vercel.svg",
     isActive: true,

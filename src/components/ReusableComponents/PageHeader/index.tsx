@@ -24,14 +24,21 @@ const PageHeader = ({
     <div className="w-full flex flex-col gap-8">
       <div className="w-full flex justify-center sm:justify-between items-center gap-8 flex-wrap">
         <p className="text-primary text-4xl font-semibold">{heading}</p>
-        <div className="relative md:mr-28">
+        <div className="relative md:mr-28 group">
           <PurpleIcon className="absolute -left-4 -top-3 -z-10 -rotate-45 py-3">
             {leftIcon}
           </PurpleIcon>
-          <PurpleIcon className="z-10 backdrop-blur">{mainIcon}</PurpleIcon>
+
+          <PurpleIcon className="z-10 backdrop-blur group-hover:scale-110 group-hover:animate-none transition-all duration-300 ease-in-out shadow-lg group-hover:shadow-xl group-hover:shadow-primary/20">
+            {mainIcon}
+          </PurpleIcon>
+
           <PurpleIcon className="absolute -right-4 -top-3 -z-10 rotate-45 py-3">
             {rightIcon}
           </PurpleIcon>
+
+          {/* Subtle background glow effect */}
+          <div className="absolute inset-0 -z-20 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 rounded-full blur-xl scale-150 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
         </div>
       </div>
 

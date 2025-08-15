@@ -1,6 +1,6 @@
 "use client";
 import { WebinarWithPresenter } from "@/lib/type";
-import { MessageSquare, Users } from "lucide-react";
+import { Loader2, MessageSquare, Users } from "lucide-react";
 import { StreamChat } from "stream-chat";
 import { ParticipantView, useCallStateHooks } from "@stream-io/video-react-sdk";
 import React, { useEffect, useState } from "react";
@@ -9,6 +9,9 @@ import { CtaTypeEnum } from "@prisma/client";
 import { Chat, Channel, MessageList, MessageInput } from "stream-chat-react";
 import "stream-chat-react/dist/css/v2/index.css";
 import CTADialogBox from "./CTADialogBox";
+import { changeWebinarStatus } from "@/actions/webinar";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type Props = {
   showChat: boolean;
@@ -32,11 +35,14 @@ const LiveWebinarView = ({
   const [chatClient, setChatClient] = useState<StreamChat | null>(null);
   const [channel, setChannel] = useState<any>(null);
   const [dialogOpen, setDialogOpen] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const { useParticipantCount, useParticipants } = useCallStateHooks();
   const viewerCount = useParticipantCount();
   const participants = useParticipants();
   const hostParticipant = participants.length > 0 ? participants[0] : null;
+
+  const router = useRouter();
 
   const handleCTAButtonClick = async () => {
     if (!channel) return;
@@ -44,6 +50,24 @@ const LiveWebinarView = ({
     await channel.sendEvent({
       type: "open-cta-dialog",
     });
+  };
+
+  const handleStream = async () => {
+    setLoading(true);
+    try {
+      const res = await changeWebinarStatus(webinar.id, "ENDED");
+      if (!res.success) {
+        throw new Error(res.message || "Failed to end webinar");
+      }
+
+      router.refresh();
+      toast.success("Webinar ended successfully");
+    } catch (error) {
+      console.log("Error in ending stream", error);
+      toast.error("Error in ending stream");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -154,6 +178,16 @@ const LiveWebinarView = ({
 
             {isHost && (
               <div className="flex items-center space-x-1">
+                <Button onClick={handleStream} disabled={loading}>
+                  {loading ? (
+                    <>
+                      <Loader2 className="animate-spin mr-2" />
+                      Loading...
+                    </>
+                  ) : (
+                    "End Stream"
+                  )}
+                </Button>
                 <Button onClick={handleCTAButtonClick}>
                   {webinar.ctaType === CtaTypeEnum.BOOK_A_CALL
                     ? "Book a Call"

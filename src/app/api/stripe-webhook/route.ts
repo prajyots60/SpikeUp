@@ -1,3 +1,4 @@
+import { changeAttendanceType } from "@/actions/attendance";
 import { updateSubscriptionEvent } from "@/actions/stripe";
 import { stripe } from "@/lib/stripe/index";
 import { headers } from "next/headers";
@@ -52,6 +53,19 @@ export async function POST(req: NextRequest) {
       metadata.connectAccountSubscriptions
     ) {
       console.log("Skipping event for connected account");
+
+      //Keep track of leads conversion
+      if (event.metadata && event.metadata.attendeeId) {
+        switch (stripeEvent.type) {
+          case "checkout.session.completed":
+            await changeAttendanceType(
+              event?.metadata?.attendeeId,
+              event?.metadata?.webinarId,
+              "CONVERTED"
+            );
+        }
+      }
+
       return NextResponse.json(
         { message: "Skipping event for connected account" },
         { status: 200 }
