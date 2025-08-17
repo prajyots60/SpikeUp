@@ -28,7 +28,7 @@ const CustomLivestreamPlayer = ({
 
   useEffect(() => {
     if (!client) return;
-    const myCall = client.call(callId, callType);
+    const myCall = client.call(callType, callId);
     setCall(myCall);
     myCall.join({ create: true }).then(
       () => setCall(myCall),

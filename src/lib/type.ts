@@ -94,3 +94,11 @@ export type AttendanceData = {
 export type WebinarWithPresenter = Webinar & {
   presenter: User;
 };
+
+export type StreamCallRecording = {
+  filename: string;
+  url: string;
+  start_time: string;
+  end_time: string;
+  session_id: string;
+};

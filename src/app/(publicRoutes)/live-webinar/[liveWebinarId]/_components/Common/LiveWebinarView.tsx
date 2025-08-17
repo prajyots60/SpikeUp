@@ -76,7 +76,7 @@ const LiveWebinarView = ({
       }
 
       toast.success("Webinar ended successfully");
-      router.push("/");
+      router.push("/webinars");
     } catch (error) {
       console.log("Error in ending stream", error);
       toast.error("Error in ending stream");
@@ -123,20 +123,24 @@ const LiveWebinarView = ({
         if (event.type === "open-cta-dialog" && !isHost) {
           setDialogOpen(true);
         }
+
+        if (event.type === "start-live") {
+          window.location.reload();
+        }
       });
     }
   }, [chatClient, channel, isHost]);
 
-  useEffect(() => {
-    call.on("call.rtmp_broadcast_started", () => {
-      toast.success("Webinar started successfully");
-      router.refresh();
-    });
+  // useEffect(() => {
+  //   call.on("call.rtmp_broadcast_started", () => {
+  //     toast.success("Webinar started successfully");
+  //     router.refresh();
+  //   });
 
-    call.on("call.rtmp_broadcast_failed", () => {
-      toast.success("Stream failed to start");
-    });
-  }, [call, router]);
+  //   call.on("call.rtmp_broadcast_failed", () => {
+  //     toast.success("Stream failed to start");
+  //   });
+  // }, [call, router]);
 
   //TODO: Handle recording events
   useEffect(() => {
@@ -221,7 +225,22 @@ const LiveWebinarView = ({
                 >
                   Get OBS Creds
                 </Button>
-                <Button onClick={handleEndStream} disabled={loading}>
+                <Button
+                  variant={"outline"}
+                  className="mr-2"
+                  onClick={async () => {
+                    await channel.sendEvent({
+                      type: "start-live",
+                    });
+                  }}
+                >
+                  Go Live
+                </Button>
+                <Button
+                  onClick={handleEndStream}
+                  disabled={loading}
+                  variant={"destructive"}
+                >
                   {loading ? (
                     <>
                       <Loader2 className="animate-spin mr-2" />
@@ -261,7 +280,7 @@ const LiveWebinarView = ({
         )}
       </div>
 
-      {dialogOpen && (
+      {!isHost && dialogOpen && (
         <CTADialogBox
           open={dialogOpen}
           onOpenChange={setDialogOpen}

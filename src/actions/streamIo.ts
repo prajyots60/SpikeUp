@@ -73,7 +73,7 @@ export const createAndStartStream = async (webinar: Webinar) => {
       throw new Error("You already have a live webinar running");
     }
 
-    const call = getStreamClient.video.call(webinar.id, "livestream");
+    const call = getStreamClient.video.call("livestream", webinar.id);
     await call.getOrCreate({
       data: {
         created_by_id: webinar.presenterId,
@@ -90,13 +90,57 @@ export const createAndStartStream = async (webinar: Webinar) => {
     await call.goLive({});
 
     // Start recording automatically when going live
-    await call.startRecording();
+    // await call.startRecording();
 
     console.log("Stream started successfully");
+    return {
+      id: call.id,
+      type: call.type,
+      createdBy: webinar.presenterId,
+    };
   } catch (error) {
     console.error("Error starting stream:", error);
     throw new Error("Failed to start stream");
   }
 };
 
-//TODO : Make a call to get recording
+export const getWebinarRecordings = async (webinarId: string) => {
+  try {
+    const call = getStreamClient.video.call(webinarId, "livestream");
+
+    // Get all recordings for this call
+    const recordings = await call.listRecordings();
+
+    return recordings;
+  } catch (error) {
+    console.error("Error getting recordings:", error);
+    throw new Error("Failed to get recordings");
+  }
+};
+
+export const getWebinarRecordingById = async (
+  webinarId: string,
+  recordingId: string
+) => {
+  try {
+    const call = getStreamClient.video.call(webinarId, "livestream");
+
+    // Get all recordings for this call and filter by recording ID
+    const recordings = await call.listRecordings();
+
+    // Find the specific recording by ID
+    const recording = recordings.recordings.find(
+      (rec: any) =>
+        rec.filename === recordingId || rec.url.includes(recordingId)
+    );
+
+    if (!recording) {
+      throw new Error("Recording not found");
+    }
+
+    return recording;
+  } catch (error) {
+    console.error("Error getting recording by ID:", error);
+    throw new Error("Failed to get recording");
+  }
+};

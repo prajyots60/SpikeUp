@@ -10,13 +10,14 @@ import { changeWebinarStatus } from "@/actions/webinar";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
+import { createAndStartStream } from "@/actions/streamIo";
 
 type Props = {
   webinar: Webinar;
-  user: User | null;
+  currentUser: User | null;
 };
 
-const WebinarUpcomingState = ({ webinar, user }: Props) => {
+const WebinarUpcomingState = ({ webinar, currentUser }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
@@ -24,6 +25,12 @@ const WebinarUpcomingState = ({ webinar, user }: Props) => {
   const handleStartWebinar = async () => {
     setLoading(true);
     try {
+      if (!currentUser) {
+        toast.error("You must be logged in to start a webinar.");
+        return;
+      }
+
+      await createAndStartStream(webinar);
       const res = await changeWebinarStatus(webinar.id, "LIVE");
 
       if (!res.success) {
@@ -68,7 +75,7 @@ const WebinarUpcomingState = ({ webinar, user }: Props) => {
           <WaitListComponent webinarId={webinar.id} webinarStatus="SCHEDULED" />
         ) : webinar?.webinarStatus === "WAITING_ROOM" ? (
           <>
-            {user?.id === webinar?.presenterId ? (
+            {currentUser?.id === webinar?.presenterId ? (
               <Button
                 className="w-full max-w-[300px] font-semibold"
                 onClick={handleStartWebinar}
