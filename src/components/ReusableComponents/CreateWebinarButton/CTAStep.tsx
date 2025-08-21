@@ -62,6 +62,10 @@ const CTAStep = ({ assistants, stripeProducts }: Props) => {
     updateCTAField("priceId", value);
   };
 
+  const handleSelectAgent = (value: string) => {
+    updateCTAField("aiAgent", value);
+  };
+
   return (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -141,44 +145,87 @@ const CTAStep = ({ assistants, stripeProducts }: Props) => {
         </Tabs>
       </div>
 
-      <div className="space-y-2">
-        <Label>Attach a Product</Label>
-        <div className="relative">
-          <div className="mb-2">
-            <div className="relative">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
-              <Input
-                placeholder="Search Agents..."
-                className="pl-9 !bg-background/50 border border-input"
-              />
+      {ctaType === CtaTypeEnum.BOOK_A_CALL && (
+        <div className="space-y-2">
+          <Label>Attach an Ai Agent</Label>
+          <div className="relative">
+            <div className="mb-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
+                <Input
+                  placeholder="Search Agents..."
+                  className="pl-9 !bg-background/50 border border-input"
+                />
+              </div>
             </div>
-          </div>
 
-          <Select value={priceId} onValueChange={handleProductChange}>
-            <SelectTrigger className="w-full !bg-background/50 border border-input">
-              <SelectValue placeholder="Select a product" />
-            </SelectTrigger>
+            <Select value={aiAgent} onValueChange={handleSelectAgent}>
+              <SelectTrigger className="w-full !bg-background/50 border border-input">
+                <SelectValue placeholder="Select an AI agent" />
+              </SelectTrigger>
 
-            <SelectContent className="max-h-48 bg-background border border-input">
-              {stripeProducts.length > 0 ? (
-                stripeProducts.map((product) => (
-                  <SelectItem
-                    key={product.id}
-                    value={product?.default_price?.toString() || ""} // Ensure value is a string
-                    className="!bg-background/50 hover:!bg-white/10"
-                  >
-                    {product.name}
+              <SelectContent className="max-h-48 bg-background border border-input">
+                {assistants.length > 0 ? (
+                  assistants.map((assistant) => (
+                    <SelectItem
+                      key={assistant.id}
+                      value={assistant.id}
+                      className="!bg-background/50 hover:!bg-white/10"
+                    >
+                      {assistant.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="No Agent Available" disabled>
+                    No AI agents available.
                   </SelectItem>
-                ))
-              ) : (
-                <SelectItem value="none" disabled>
-                  Create product in Stripe.
-                </SelectItem>
-              )}
-            </SelectContent>
-          </Select>
+                )}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-      </div>
+      )}
+
+      {ctaType === CtaTypeEnum.BUY_NOW && (
+        <div className="space-y-2">
+          <Label>Attach a Product</Label>
+          <div className="relative">
+            <div className="mb-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
+                <Input
+                  placeholder="Search Agents..."
+                  className="pl-9 !bg-background/50 border border-input"
+                />
+              </div>
+            </div>
+
+            <Select value={priceId} onValueChange={handleProductChange}>
+              <SelectTrigger className="w-full !bg-background/50 border border-input">
+                <SelectValue placeholder="Select a product" />
+              </SelectTrigger>
+
+              <SelectContent className="max-h-48 bg-background border border-input">
+                {stripeProducts.length > 0 ? (
+                  stripeProducts.map((product) => (
+                    <SelectItem
+                      key={product.id}
+                      value={product?.default_price?.toString() || ""} // Ensure value is a string
+                      className="!bg-background/50 hover:!bg-white/10"
+                    >
+                      {product.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="none" disabled>
+                    Create product in Stripe.
+                  </SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
