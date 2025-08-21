@@ -136,7 +136,9 @@ const Participant = ({ apiKey, webinar, callId }: Props) => {
                 </div>
               </div>
 
-              <h2 className="text-xl font-semibold mb-2">Joining Webinar</h2>
+              <h2 className="text-xl text-white font-semibold mb-2">
+                Joining Webinar
+              </h2>
               <p className="text-muted-foreground">
                 Connecting to {webinar.title}...
               </p>
@@ -175,7 +177,9 @@ const Participant = ({ apiKey, webinar, callId }: Props) => {
               <div className="mx-auto w-16 h-16 mb-4 text-destructive">
                 <AlertCircle className="w-16 h-16" />
               </div>
-              <h2 className="text-xl font-semibold mb-2">Connection Failed</h2>
+              <h2 className="text-xl text-white font-semibold mb-2">
+                Connection Failed
+              </h2>
               <p className="text-destructive mb-4">
                 {errorMessage || "Unable to connect to the webinar."}
               </p>
@@ -183,6 +187,7 @@ const Participant = ({ apiKey, webinar, callId }: Props) => {
                 <Button
                   variant={"outline"}
                   onClick={() => window.location.reload()}
+                  className="text-white"
                 >
                   Retry
                 </Button>

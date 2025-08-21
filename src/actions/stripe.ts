@@ -28,11 +28,10 @@ export const getAllProductsFromStripe = async () => {
     }
 
     const products = await stripe.products.list(
-      {}
       //{TODO: Uncomment when needed}
-      //   {
-      //     stripeAccount: currentUser.user.stripeConnectId,
-      //   }
+      {
+        stripeAccount: currentUser.user.stripeConnectId,
+      }
     );
 
     return {
@@ -130,6 +129,14 @@ export const createCheckoutLink = async (
   bookCall: boolean = false
 ) => {
   try {
+    console.log(
+      "Logging details: ",
+      priceId,
+      stripeId,
+      attendeeId,
+      webinarId,
+      bookCall
+    );
     const session = await stripe.checkout.sessions.create(
       {
         line_items: [
