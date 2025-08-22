@@ -1,9 +1,31 @@
 import { createAssistant } from "@/actions/vapi";
 import { Button } from "@/components/ui/button";
-import { on } from "events";
-import { Loader2, X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  PROVIDERS_CONFIG,
+  DEFAULT_PROVIDER,
+  DEFAULT_MODEL,
+  getModelsForProvider,
+  ProviderType,
+} from "@/lib/constants/providers";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 
 type Props = {
@@ -13,20 +35,40 @@ type Props = {
 
 const CreateAssistantModal = ({ isOpen, onClose }: Props) => {
   const [name, setName] = useState("");
+  const [provider, setProvider] = useState<ProviderType>(DEFAULT_PROVIDER);
+  const [model, setModel] = useState(DEFAULT_MODEL);
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+
+  // Get available models for the selected provider
+  const availableModels = getModelsForProvider(provider);
+
+  // Reset model when provider changes (but not on initial load)
+  useEffect(() => {
+    if (availableModels.length > 0) {
+      // Check if current model is valid for the new provider
+      const isCurrentModelValid = availableModels.some(
+        (m) => m.value === model
+      );
+      if (!isCurrentModelValid) {
+        setModel(availableModels[0].value);
+      }
+    }
+  }, [provider, availableModels, model]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await createAssistant(name);
+      const res = await createAssistant(name, provider, model);
       if (!res.success) {
         throw new Error("Failed to create assistant");
       }
       router.refresh();
       setName("");
+      setProvider(DEFAULT_PROVIDER);
+      setModel(DEFAULT_MODEL);
       onClose();
       toast.success("Assistant created successfully");
     } catch (error) {
@@ -37,40 +79,96 @@ const CreateAssistantModal = ({ isOpen, onClose }: Props) => {
     }
   };
 
-  if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-      <div className="bg-muted/80 rounded-lg w-full max-w-md p-6 border border-input shadow-xl">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">Create Assistant</h2>
-          <button
-            onClick={onClose}
-            className="text-neutral-400 hover:text-white"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="bg-muted border-input shadow-xl">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-semibold">
+            Create Assistant
+          </DialogTitle>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-6">
-            <label className="block font-medium mb-2">Assistant Name</label>
-            <input
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <Label className="block font-medium mb-2">Assistant Name</Label>
+            <Input
               type="text"
               placeholder="Enter assistant name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="bg-neutral-800 border-neutral-700 text-white w-full p-2 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+              className="bg-neutral-800 border-neutral-700 text-white w-full focus:ring-2 focus:ring-primary"
               required
             />
             <p className="text-xs text-neutral-400 mt-2">
               This name will be used to identify your assistant in the list.
             </p>
           </div>
-          <div className="flex justify-end gap-3">
-            <Button type="button" onClick={onClose} variant={"outline"}>
+
+          <div>
+            <Label className="block font-medium mb-2">AI Provider</Label>
+            <Select
+              value={provider}
+              onValueChange={(value: ProviderType) => setProvider(value)}
+            >
+              <SelectTrigger className="bg-neutral-800 border-neutral-700 text-white focus:ring-2 focus:ring-primary">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-neutral-800 border-neutral-700">
+                {PROVIDERS_CONFIG.map((providerConfig) => (
+                  <SelectItem
+                    key={providerConfig.value}
+                    value={providerConfig.value}
+                    className="text-white hover:bg-neutral-700"
+                  >
+                    <span>{providerConfig.label}</span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-neutral-400 mt-2">
+              Choose the AI provider that will power your assistant.
+            </p>
+          </div>
+
+          <div>
+            <Label className="block font-medium mb-2">Model</Label>
+            <Select value={model} onValueChange={setModel}>
+              <SelectTrigger className="bg-neutral-800 border-neutral-700 text-white focus:ring-2 focus:ring-primary">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-neutral-800 border-neutral-700">
+                {availableModels.map((modelOption) => (
+                  <SelectItem
+                    key={modelOption.value}
+                    value={modelOption.value}
+                    className="text-white hover:bg-neutral-700"
+                  >
+                    <div className="flex flex-col gap-1">
+                      <span className="font-medium">{modelOption.label}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-neutral-400 mt-2">
+              Select the specific model version to use for this assistant.
+            </p>
+          </div>
+
+          <DialogFooter className="flex justify-end gap-3">
+            <Button
+              type="button"
+              onClick={onClose}
+              variant={"outline"}
+              className="cursor-pointer"
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={!name.trim() || loading}>
+            <Button
+              type="submit"
+              disabled={!name.trim() || loading}
+              className="cursor-pointer"
+            >
               {loading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -80,10 +178,10 @@ const CreateAssistantModal = ({ isOpen, onClose }: Props) => {
                 "Create Assistant"
               )}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

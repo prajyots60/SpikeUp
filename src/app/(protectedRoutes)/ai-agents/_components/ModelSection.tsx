@@ -12,7 +12,7 @@ const ModelSection = (props: Props) => {
         <span className="h-5 w-5 rounded-full flex items-center justify-center text-xs">
           <Settings className="h-4 w-4" />
         </span>
-        <span className="uppercase text-sm font-medium">MODEL</span>
+        <span className="uppercase text-sm font-medium">SETTINGS</span>
       </div>
 
       <ScrollArea>

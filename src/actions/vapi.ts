@@ -2,6 +2,7 @@
 
 import { aiAgentPrompt } from "@/lib/data";
 import { vapiServer } from "@/lib/vapi/vapiServer";
+import { ProviderType } from "@/lib/constants/providers";
 
 export const getAllAssistants = async () => {
   try {
@@ -23,14 +24,18 @@ export const getAllAssistants = async () => {
   }
 };
 
-export const createAssistant = async (name: string) => {
+export const createAssistant = async (
+  name: string,
+  provider: ProviderType = "openai",
+  model: string = "gpt-4o"
+) => {
   try {
     const createAssistant = await vapiServer.assistants.create({
       name,
       firstMessage: `Hi there, this is ${name} from customer support. How can I help you today?`,
       model: {
-        model: "gpt-4o",
-        provider: "openai",
+        model,
+        provider: provider as any, // Type assertion for now since vapi types might be outdated
         messages: [
           {
             role: "system",
@@ -58,14 +63,16 @@ export const createAssistant = async (name: string) => {
 export const updateAssistant = async (
   assistantId: string,
   firstMessage: string,
-  systemPrompt: string
+  systemPrompt: string,
+  provider: ProviderType = "openai",
+  model: string = "gpt-4o"
 ) => {
   try {
     const updateAssistant = await vapiServer.assistants.update(assistantId, {
       firstMessage,
       model: {
-        model: "gpt-4o",
-        provider: "openai",
+        model,
+        provider: provider as any, // Type assertion for now since vapi types might be outdated
         messages: [
           {
             role: "system",

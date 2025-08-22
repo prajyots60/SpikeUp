@@ -5,8 +5,6 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAiAgentStore } from "@/store/useAiAgentStore";
 import { Assistant } from "@vapi-ai/server-sdk/api";
-import { set } from "date-fns";
-import { Agent } from "http";
 import { Plus, Search } from "lucide-react";
 import React, { useState } from "react";
 import CreateAssistantModal from "./CreateAssistantModal";

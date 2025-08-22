@@ -2,14 +2,25 @@
 import { updateAssistant } from "@/actions/vapi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  PROVIDERS_CONFIG,
+  getModelsForProvider,
+  ProviderType,
+} from "@/lib/constants/providers";
 import { useAiAgentStore } from "@/store/useAiAgentStore";
 import { Info, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import ConfigField from "./ConfigField";
-import DropDownSelect from "./DropDownSelect";
 
 type Props = {};
 
@@ -20,14 +31,31 @@ const ModelConfiguration = (props: Props) => {
 
   const [firstMessage, setFirstMessage] = useState("");
   const [systemPrompt, setSystemPrompt] = useState("");
+  const [provider, setProvider] = useState<ProviderType>("openai");
+  const [model, setModel] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Get available models for the selected provider
+  const availableModels = getModelsForProvider(provider);
 
   useEffect(() => {
     if (assistant) {
       setFirstMessage(assistant?.firstMessage || "");
       setSystemPrompt(assistant?.model?.messages?.[0]?.content || "");
+      setProvider((assistant?.model?.provider as ProviderType) || "openai");
+      setModel(assistant?.model?.model || "");
     }
   }, [assistant]);
+
+  // Reset model when provider changes if current model is not available for new provider
+  useEffect(() => {
+    if (
+      availableModels.length > 0 &&
+      !availableModels.find((m) => m.value === model)
+    ) {
+      setModel(availableModels[0].value);
+    }
+  }, [provider, availableModels, model]);
 
   if (!assistant) {
     return (
@@ -48,7 +76,9 @@ const ModelConfiguration = (props: Props) => {
       const res = await updateAssistant(
         assistant?.id,
         firstMessage,
-        systemPrompt
+        systemPrompt,
+        provider,
+        model
       );
 
       if (!res.success) {
@@ -115,11 +145,53 @@ const ModelConfiguration = (props: Props) => {
 
       <div className="grid grid-cols-2 gap-6">
         <ConfigField label="Provider">
-          <DropDownSelect value={assistant.model?.provider || ""} />
+          <Select
+            value={provider}
+            onValueChange={(value: ProviderType) => setProvider(value)}
+          >
+            <SelectTrigger className="bg-neutral-800 border-neutral-700 text-white focus:ring-2 focus:ring-primary">
+              <SelectValue placeholder="Select a provider" />
+            </SelectTrigger>
+            <SelectContent className="bg-neutral-800 border-neutral-700">
+              {PROVIDERS_CONFIG.map((providerConfig) => (
+                <SelectItem
+                  key={providerConfig.value}
+                  value={providerConfig.value}
+                  className="text-white hover:bg-neutral-700"
+                >
+                  <span>{providerConfig.label}</span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </ConfigField>
 
         <ConfigField label="Model" showInfo={true}>
-          <DropDownSelect value={assistant.model?.model || ""} />
+          <Select value={model} onValueChange={setModel}>
+            <SelectTrigger className="bg-neutral-800 border-neutral-700 text-white focus:ring-2 focus:ring-primary">
+              <SelectValue placeholder="Select a model">
+                {model && availableModels.find((m) => m.value === model)?.label}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent className="bg-neutral-800 border-neutral-700">
+              {availableModels.map((modelOption) => (
+                <SelectItem
+                  key={modelOption.value}
+                  value={modelOption.value}
+                  className="text-white hover:bg-neutral-700"
+                >
+                  <div className="flex flex-col gap-1">
+                    <span className="font-medium">{modelOption.label}</span>
+                    {modelOption.description && (
+                      <span className="text-xs text-neutral-400">
+                        {modelOption.description}
+                      </span>
+                    )}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </ConfigField>
       </div>
     </div>
