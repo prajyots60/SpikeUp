@@ -54,3 +54,40 @@ export const createAssistant = async (name: string) => {
     };
   }
 };
+
+export const updateAssistant = async (
+  assistantId: string,
+  firstMessage: string,
+  systemPrompt: string
+) => {
+  try {
+    const updateAssistant = await vapiServer.assistants.update(assistantId, {
+      firstMessage,
+      model: {
+        model: "gpt-4o",
+        provider: "openai",
+        messages: [
+          {
+            role: "system",
+            content: systemPrompt,
+          },
+        ],
+        temperature: 0.5,
+      },
+    });
+    console.log("Assistant updated successfully:", updateAssistant);
+    return {
+      status: 200,
+      success: true,
+      data: updateAssistant,
+    };
+  } catch (error) {
+    console.error("Error updating assistant:", error);
+    return {
+      status: 500,
+      success: false,
+      message: "Failed to update assistant",
+      error,
+    };
+  }
+};
