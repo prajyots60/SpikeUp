@@ -221,13 +221,13 @@ const LiveWebinarView = ({
                 <Button
                   onClick={() => setObsDialogOpen(true)}
                   variant={"outline"}
-                  className="mr-2"
+                  className="mr-2 cursor-pointer"
                 >
                   Get OBS Creds
                 </Button>
                 <Button
                   variant={"outline"}
-                  className="mr-2"
+                  className="mr-2 cursor-pointer"
                   onClick={async () => {
                     await channel.sendEvent({
                       type: "start-live",
@@ -240,6 +240,7 @@ const LiveWebinarView = ({
                   onClick={handleEndStream}
                   disabled={loading}
                   variant={"destructive"}
+                  className="cursor-pointer"
                 >
                   {loading ? (
                     <>
@@ -250,7 +251,10 @@ const LiveWebinarView = ({
                     "End Stream"
                   )}
                 </Button>
-                <Button onClick={handleCTAButtonClick}>
+                <Button
+                  onClick={handleCTAButtonClick}
+                  className="cursor-pointer"
+                >
                   {webinar.ctaType === CtaTypeEnum.BOOK_A_CALL
                     ? "Book a Call"
                     : "Buy Now"}
