@@ -2,7 +2,7 @@
 
 import { prismaClient } from "@/lib/prismaClient";
 import { AttendanceData } from "@/lib/type";
-import { AttendedTypeEnum, CtaTypeEnum } from "@prisma/client";
+import { AttendedTypeEnum, CallStatusEnum, CtaTypeEnum } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 export const getWebinarAttendance = async (
@@ -261,6 +261,84 @@ export const changeAttendanceType = async (
       success: false,
       status: 500,
       message: "Failed to update attendance type",
+      error,
+    };
+  }
+};
+
+export const getAttendeeById = async (id: string, webinarId: string) => {
+  try {
+    const attendee = await prismaClient.attendee.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    const attendance = await prismaClient.attendance.findFirst({
+      where: {
+        attendeeId: id,
+        webinarId,
+      },
+    });
+
+    if (!attendee || !attendance) {
+      return {
+        status: 404,
+        success: false,
+        message: "Attendee or attendance not found",
+      };
+    }
+
+    return {
+      status: 200,
+      success: true,
+      message: "Get attendee details successfully",
+      data: attendee,
+    };
+  } catch (error) {
+    console.error("Error fetching attendee by ID:", error);
+    return {
+      status: 500,
+      success: false,
+      message: "Internal server error",
+    };
+  }
+};
+
+export const changeCallStatus = async (
+  attendeeId: string,
+  callStatus: CallStatusEnum
+) => {
+  try {
+    const attendee = await prismaClient.attendee.update({
+      where: {
+        id: attendeeId,
+      },
+      data: {
+        callStatus,
+      },
+    });
+
+    if (!attendee) {
+      return {
+        success: false,
+        status: 404,
+        message: "Attendee not found",
+      };
+    }
+
+    return {
+      success: true,
+      status: 200,
+      data: attendee,
+      message: "Call status updated successfully",
+    };
+  } catch (error) {
+    console.error("Error updating call status:", error);
+    return {
+      success: false,
+      status: 500,
+      message: "Failed to update call status",
       error,
     };
   }

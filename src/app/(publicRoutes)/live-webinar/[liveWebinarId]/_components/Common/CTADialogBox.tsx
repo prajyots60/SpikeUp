@@ -51,21 +51,21 @@ const CTADialogBox = ({
             "No priceId or presenter Stripe Connect ID found."
           );
         }
-      }
 
-      const session = await createCheckoutLink(
-        webinar.priceId!,
-        webinar.presenter.stripeConnectId!,
-        userId,
-        webinar.id,
-        true
-      );
-      if (!session.sessionUrl) {
-        throw new Error("Session URL not found");
-      }
+        const session = await createCheckoutLink(
+          webinar.priceId!,
+          webinar.presenter.stripeConnectId!,
+          userId,
+          webinar.id,
+          true
+        );
+        if (!session.sessionUrl) {
+          throw new Error("Session URL not found");
+        }
 
-      // window.open(session.sessionUrl, "_blank");
-      window.location.href = session.sessionUrl;
+        // window.open(session.sessionUrl, "_blank");
+        window.location.href = session.sessionUrl;
+      }
     } catch (error) {
       console.error("Error creating checkout link:", error);
       toast.error("Failed to create checkout link. Please try again later.");
