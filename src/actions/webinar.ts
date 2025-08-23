@@ -4,7 +4,6 @@ import { WebinarFormState } from "@/store/useWebinarStore";
 import { OnAuthenticateUser } from "./auth";
 import { prismaClient } from "@/lib/prismaClient";
 import { revalidatePath } from "next/cache";
-import { th } from "date-fns/locale";
 import { WebinarStatusEnum } from "@prisma/client";
 
 function combineDateTime(

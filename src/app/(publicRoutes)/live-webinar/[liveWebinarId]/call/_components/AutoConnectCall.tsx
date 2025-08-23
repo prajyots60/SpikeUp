@@ -7,7 +7,6 @@ import { WebinarWithPresenter } from "@/lib/type";
 import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi/vapiClient";
 import { CallStatusEnum } from "@prisma/client";
-import { set } from "date-fns";
 import { Bot, Clock, Loader2, Mic, MicOff, PhoneOff } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -121,10 +120,15 @@ const AutoConnectCall = ({
       vapi.stop();
       setCallStatus(CallStatus.FINISHED);
       cleanup();
-      const res = await changeCallStatus(userId, CallStatusEnum.COMPLETED);
-      if (!res.success) {
-        throw new Error("Failed to change call status");
-      }
+
+      // Delay the server action to avoid React render timing issues
+      setTimeout(async () => {
+        const res = await changeCallStatus(userId, CallStatusEnum.COMPLETED);
+        if (!res.success) {
+          console.error("Failed to change call status:", res);
+        }
+      }, 0);
+
       toast.success("Call ended Successfully");
     } catch (error) {
       console.error("Error stopping call:", error);
@@ -169,10 +173,15 @@ const AutoConnectCall = ({
     try {
       setCallStatus(CallStatus.CONNECTING);
       await vapi.start(assistantId);
-      const res = await changeCallStatus(userId, CallStatusEnum.InProgress);
-      if (!res.success) {
-        throw new Error("Failed to change call status");
-      }
+
+      // Delay the server action to avoid React render timing issues
+      setTimeout(async () => {
+        const res = await changeCallStatus(userId, CallStatusEnum.InProgress);
+        if (!res.success) {
+          console.error("Failed to change call status:", res);
+        }
+      }, 0);
+
       toast.success("Call started successfully");
     } catch (error) {
       console.error("Error starting call:", error);

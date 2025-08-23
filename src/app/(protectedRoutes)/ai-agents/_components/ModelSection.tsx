@@ -3,9 +3,7 @@ import { Settings } from "lucide-react";
 import React from "react";
 import ModelConfiguration from "./ModelConfiguration";
 
-type Props = {};
-
-const ModelSection = (props: Props) => {
+const ModelSection = () => {
   return (
     <div className="p-8 flex-1 overflow-auto">
       <div className="flex items-center gap-2 mb-4">

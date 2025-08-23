@@ -11,7 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAttendeeStore } from "@/store/useAttendeeStore";
 import { WebinarStatusEnum } from "@prisma/client";
-import { fi } from "date-fns/locale";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";

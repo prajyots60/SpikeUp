@@ -7,7 +7,7 @@ import {
   useCallStateHooks,
   type Call,
 } from "@stream-io/video-react-sdk";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CtaTypeEnum } from "@prisma/client";
 import { Chat, Channel, MessageList, MessageInput } from "stream-chat-react";

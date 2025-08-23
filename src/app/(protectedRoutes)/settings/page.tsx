@@ -5,7 +5,6 @@ import {
   HomeIcon,
   LucideAlertCircle,
   LucideArrowRight,
-  LucideCheckCircle,
   LucideCheckCircle2,
   Settings,
   Sparkle,
@@ -15,9 +14,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 
-type Props = {};
-
-const page = async (props: Props) => {
+const page = async () => {
   const userExits = await OnAuthenticateUser();
   if (!userExits.user) {
     redirect("/sign-in");

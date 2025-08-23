@@ -1,12 +1,8 @@
-import { SignIn } from '@clerk/nextjs'
-import React from 'react'
+import { SignIn } from "@clerk/nextjs";
+import React from "react";
 
-type Props = {}
+const Signin = () => {
+  return <SignIn />;
+};
 
-const Signin = (props: Props) => {
-  return (
-    <SignIn />
-  )
-}
-
-export default Signin
+export default Signin;

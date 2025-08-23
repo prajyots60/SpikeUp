@@ -3,8 +3,6 @@ import { getWebinarById } from "@/actions/webinar";
 import React from "react";
 import RenderWebinar from "./_components/RenderWebinar";
 import { WebinarWithPresenter, StreamCallRecording } from "@/lib/type";
-import { WebinarStatusEnum } from "@prisma/client";
-import { getWebinarRecordings } from "@/actions/streamIo";
 
 type Props = {
   params: Promise<{
@@ -21,7 +19,7 @@ const page = async ({ params, searchParams }: Props) => {
 
   const webinarData = await getWebinarById(liveWebinarId);
 
-  let recording: StreamCallRecording | null = null;
+  const recording: StreamCallRecording | null = null;
 
   // if (webinarData?.webinarStatus === WebinarStatusEnum.ENDED) {
   //   try {

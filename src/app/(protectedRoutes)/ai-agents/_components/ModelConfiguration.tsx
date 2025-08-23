@@ -22,9 +22,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import ConfigField from "./ConfigField";
 
-type Props = {};
-
-const ModelConfiguration = (props: Props) => {
+const ModelConfiguration = () => {
   const { assistant } = useAiAgentStore();
 
   const router = useRouter();

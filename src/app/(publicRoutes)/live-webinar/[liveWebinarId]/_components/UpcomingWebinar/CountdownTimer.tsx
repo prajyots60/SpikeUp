@@ -1,7 +1,6 @@
 import { changeWebinarStatus } from "@/actions/webinar";
 import { cn } from "@/lib/utils";
 import { WebinarStatusEnum } from "@prisma/client";
-import { time } from "console";
 import React, { useEffect, useState } from "react";
 
 type Props = {

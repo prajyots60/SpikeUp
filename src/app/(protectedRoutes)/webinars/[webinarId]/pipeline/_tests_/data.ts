@@ -1,6 +1,6 @@
 // mockGetWebinarAttendance.ts
 
-export async function getWebinarAttendance(webinarId: string) {
+export async function getWebinarAttendance() {
   return {
     webinarTags: [
       "Hot Lead",

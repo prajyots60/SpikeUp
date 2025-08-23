@@ -3,9 +3,7 @@ import React from "react";
 import AiAgentSidebar from "./_components/AiAgentSidebar";
 import ModelSection from "./_components/ModelSection";
 
-type Props = {};
-
-const page = async (props: Props) => {
+const page = async () => {
   const allAgents = await getAllAssistants();
   return (
     <div className="w-full flex h-[80vh] text-primary rounded-se-xl border border-border">

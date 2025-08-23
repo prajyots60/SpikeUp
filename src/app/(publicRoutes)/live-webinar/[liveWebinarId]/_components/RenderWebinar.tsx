@@ -1,8 +1,7 @@
 "use client";
-import { User, Webinar, WebinarStatusEnum } from "@prisma/client";
+import { User, WebinarStatusEnum } from "@prisma/client";
 import React from "react";
 import WebinarUpcomingState from "./UpcomingWebinar/WebinarUpcomingState";
-import { usePathname, useRouter } from "next/navigation";
 import { useAttendeeStore } from "@/store/useAttendeeStore";
 import LiveStreamState from "./LiveWebinar/LiveStreamState";
 import { StreamCallRecording, WebinarWithPresenter } from "@/lib/type";
@@ -16,9 +15,7 @@ type Props = {
   recording?: StreamCallRecording;
 };
 
-const RenderWebinar = ({ user, apiKey, error, webinar, recording }: Props) => {
-  const router = useRouter();
-  const pathname = usePathname();
+const RenderWebinar = ({ user, apiKey, webinar, recording }: Props) => {
   const { attendee } = useAttendeeStore();
   return (
     /* 

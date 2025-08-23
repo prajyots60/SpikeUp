@@ -12,9 +12,7 @@ import { ListTree, Users2, Webcam } from "lucide-react";
 import React from "react";
 import { leadData } from "./_tests_/data";
 
-type Props = {};
-
-const page = (props: Props) => {
+const page = () => {
   return (
     <div className="w-full flex flex-col gap-8">
       <PageHeader

@@ -76,8 +76,8 @@ const ObsDialogBox = ({ open, onOpenChange, rtmpURL, streamKey }: Props) => {
               </Button>
             </div>
             <p className="text-sm text-muted-foreground mt-1">
-              This is your unique stream key. Keep it safe and don't share it
-              with anyone.
+              This is your unique stream key. Keep it safe and don&#39;t share
+              it with anyone.
             </p>
           </div>
         </div>
