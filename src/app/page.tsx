@@ -306,7 +306,7 @@ export default async function RootPage() {
                   ))}
                 </div>
                 <p className="text-muted-foreground mb-4 italic">
-                  "{testimonial.content}"
+                  &quot;{testimonial.content}&quot;
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-accent-primary/20 flex items-center justify-center">

@@ -188,14 +188,6 @@ const AutoConnectCall = ({
   };
 
   useEffect(() => {
-    startCall();
-
-    return () => {
-      stopCall();
-    };
-  }, []);
-
-  useEffect(() => {
     const onCallStart = async () => {
       console.log("Call started");
       setCallStatus(CallStatus.ACTIVE);
@@ -248,6 +240,14 @@ const AutoConnectCall = ({
       vapi.off("error", onError);
     };
   }, [userName, callTimeLimit]);
+
+  useEffect(() => {
+    startCall();
+
+    return () => {
+      stopCall();
+    };
+  }, []);
 
   return (
     <div className="flex flex-col h-[calc(100vh-80px)] bg-background">
