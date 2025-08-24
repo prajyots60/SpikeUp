@@ -1,15 +1,6 @@
 "use client";
 import { SignUp } from "@clerk/nextjs";
-import {
-  Triangle,
-  Sparkles,
-  Users,
-  Video,
-  Zap,
-  CheckCircle,
-  BarChart3,
-  Bot,
-} from "lucide-react";
+import { Triangle, Users, CheckCircle, BarChart3, Bot } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -57,7 +48,9 @@ const Signup = () => {
 
           {/* Benefits */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-lg mb-4">What you'll get:</h3>
+            <h3 className="font-semibold text-lg mb-4">
+              What you&apos;ll get:
+            </h3>
 
             <div className="flex items-center gap-3 p-4 rounded-lg bg-card/50 border border-border/50">
               <div className="iconBackground p-2">

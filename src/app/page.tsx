@@ -11,15 +11,10 @@ import {
   CheckCircle,
   ArrowRight,
   Play,
-  Zap,
-  TrendingUp,
   Calendar,
   MessageSquare,
-  Shield,
-  Clock,
   Star,
 } from "lucide-react";
-import Image from "next/image";
 
 export default async function RootPage() {
   const user = await currentUser();
@@ -294,7 +289,7 @@ export default async function RootPage() {
                 role: "Sales Manager",
                 company: "ScaleUp Inc",
                 content:
-                  "Best webinar platform we've used. The AI assistant handles lead qualification perfectly, and our sales team loves it.",
+                  "Best webinar platform we&apos;ve used. The AI assistant handles lead qualification perfectly, and our sales team loves it.",
                 rating: 5,
               },
             ].map((testimonial, index) => (

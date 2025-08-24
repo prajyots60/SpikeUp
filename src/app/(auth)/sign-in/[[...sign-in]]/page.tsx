@@ -98,8 +98,8 @@ const Signin = () => {
               </div>
             </div>
             <p className="text-sm italic">
-              "Spotlight transformed our webinar strategy. The AI insights
-              helped us increase engagement by 300%."
+              &quot;Spotlight transformed our webinar strategy. The AI insights
+              helped us increase engagement by 300%.&quot;
             </p>
           </div>
         </div>
@@ -158,7 +158,7 @@ const Signin = () => {
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-muted-foreground">
-                  Don't have an account?{" "}
+                  Don&apos;t have an account?{" "}
                   <Link
                     href="/sign-up"
                     className="text-accent-primary hover:text-accent-primary/80 font-medium transition-colors"
