@@ -24,7 +24,7 @@ const Header = ({ user, stripeProducts, assistants }: Props) => {
     <div className="w-full px-4 pt-10 sticky top-0 z-10 flex justify-between items-center flex-wrap gap-4 bg-background">
       {pathname.includes("pipeline") ? (
         <Button
-          className="bg-primary/10 border border-border rounded-xl"
+          className="bg-primary/10 border border-border rounded-xl cursor-pointer"
           variant={"outline"}
           onClick={() => router.push("/webinars")}
         >

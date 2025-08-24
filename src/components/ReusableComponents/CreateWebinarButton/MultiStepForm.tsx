@@ -125,9 +125,9 @@ const MultiStepForm = ({ steps, onComplete }: Props) => {
                               exit={{ opacity: 0, scale: 0.8 }}
                               transition={{ duration: 0.2 }}
                               style={{
-                                color: 'white',
-                                fontSize: '1.125rem',
-                                fontWeight: 'bold'
+                                color: "white",
+                                fontSize: "1.125rem",
+                                fontWeight: "bold",
                               }}
                             >
                               <Check className="w-5 h-5" />
@@ -140,9 +140,9 @@ const MultiStepForm = ({ steps, onComplete }: Props) => {
                               exit={{ opacity: 0, scale: 0.8 }}
                               transition={{ duration: 0.2 }}
                               style={{
-                                color: 'white',
-                                fontSize: '1.125rem',
-                                fontWeight: 'bold'
+                                color: "white",
+                                fontSize: "1.125rem",
+                                fontWeight: "bold",
                               }}
                             >
                               <Check className="w-5 h-5 text-white/50" />
@@ -204,7 +204,12 @@ const MultiStepForm = ({ steps, onComplete }: Props) => {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -20, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              style={{ padding: "1.5rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}
+              style={{
+                padding: "1.5rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1.5rem",
+              }}
             >
               <div className="mb-6">
                 <h2 className="text-xl font-semibold">{currentStep.title}</h2>

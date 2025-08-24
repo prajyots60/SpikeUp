@@ -18,6 +18,7 @@ const Sidebar = () => {
   const pathname = usePathname();
   return (
     <div className="w-18 sm:w-28 h-screen sticky top-0 py-10 px-2 sm:px-6 border bg-background border-border flex flex-col items-center justify-start gap-10">
+      {/* Logo Section */}
       <div className="group cursor-pointer relative">
         <PurpleIcon className="relative overflow-hidden group-hover:shadow-2xl group-hover:shadow-primary/25 transition-all duration-500">
           {/* Main Triangle Icon */}

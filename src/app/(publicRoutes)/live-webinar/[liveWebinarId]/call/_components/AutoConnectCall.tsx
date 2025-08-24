@@ -174,13 +174,10 @@ const AutoConnectCall = ({
       setCallStatus(CallStatus.CONNECTING);
       await vapi.start(assistantId);
 
-      // Delay the server action to avoid React render timing issues
-      setTimeout(async () => {
-        const res = await changeCallStatus(userId, CallStatusEnum.InProgress);
-        if (!res.success) {
-          console.error("Failed to change call status:", res);
-        }
-      }, 0);
+      const res = await changeCallStatus(userId, CallStatusEnum.InProgress);
+      if (!res.success) {
+        console.error("Failed to change call status:", res);
+      }
 
       toast.success("Call started successfully");
     } catch (error) {
@@ -189,6 +186,14 @@ const AutoConnectCall = ({
       setCallStatus(CallStatus.FINISHED);
     }
   };
+
+  useEffect(() => {
+    startCall();
+
+    return () => {
+      stopCall();
+    };
+  }, []);
 
   useEffect(() => {
     const onCallStart = async () => {
@@ -243,14 +248,6 @@ const AutoConnectCall = ({
       vapi.off("error", onError);
     };
   }, [userName, callTimeLimit]);
-
-  useEffect(() => {
-    startCall();
-
-    return () => {
-      stopCall();
-    };
-  }, []);
 
   return (
     <div className="flex flex-col h-[calc(100vh-80px)] bg-background">
@@ -418,15 +415,15 @@ const AutoConnectCall = ({
               disabled={callStatus != CallStatus.ACTIVE}
             >
               {isMicMuted ? (
-                <MicOff className="h-5 w-5" />
+                <MicOff className="h-5 w-5 cursor-pointer" />
               ) : (
-                <Mic className="h-5 w-5" />
+                <Mic className="h-5 w-5 cursor-pointer" />
               )}
             </button>
 
             <button
               onClick={stopCall}
-              className="p-3 rounded-full bg-destructive text-primary hover:bg-destructive/90 transition-all"
+              className="p-3 rounded-full bg-destructive text-primary hover:bg-destructive/90 transition-all cursor-pointer"
               aria-label="End Call"
               disabled={callStatus != CallStatus.ACTIVE}
             >
@@ -434,7 +431,11 @@ const AutoConnectCall = ({
             </button>
           </div>
 
-          <Button onClick={checkOutLink} variant={"outline"}>
+          <Button
+            onClick={checkOutLink}
+            variant={"outline"}
+            className="cursor-pointer"
+          >
             Buy Now
           </Button>
 
