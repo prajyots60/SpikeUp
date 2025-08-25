@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { createAndStartStream } from "@/actions/streamIo";
+import { parseUTCToLocalDate } from "@/lib/utils";
 
 type Props = {
   webinar: Webinar;
@@ -21,6 +22,9 @@ const WebinarUpcomingState = ({ webinar, currentUser }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+
+  // Convert UTC time from database to local time
+  const webinarLocalTime = parseUTCToLocalDate(webinar.startTime);
 
   const handleStartWebinar = async () => {
     setLoading(true);
@@ -54,7 +58,7 @@ const WebinarUpcomingState = ({ webinar, currentUser }: Props) => {
         </p>
 
         <CountdownTimer
-          targetDate={new Date(webinar.startTime)}
+          targetDate={webinarLocalTime}
           className="text-center"
           webinarId={webinar.id}
           webinarStatus={webinar.webinarStatus}
@@ -117,12 +121,12 @@ const WebinarUpcomingState = ({ webinar, currentUser }: Props) => {
             className="rounded-md bg-secondary backdrop-blur-2xl"
           >
             <Calendar className="h-4 w-4 mr-2" />
-            {format(new Date(webinar.startTime), "dd MMM yyyy")}
+            {format(webinarLocalTime, "dd MMM yyyy")}
           </Button>
 
           <Button variant={"outline"}>
             <Clock className="h-4 w-4 mr-2" />
-            {format(new Date(webinar.startTime), "hh:mm a")}
+            {format(webinarLocalTime, "hh:mm a")}
           </Button>
         </div>
       </div>

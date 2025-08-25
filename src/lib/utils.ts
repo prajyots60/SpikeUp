@@ -38,3 +38,12 @@ export function combineLocalDateTime(
   const [year, month, day] = dateString.split("-").map(Number);
   return new Date(year, month - 1, day, hours, minutes, 0, 0);
 }
+
+// Convert database UTC time to local time for display
+export function parseUTCToLocalDate(utcDateString: string | Date): Date {
+  if (typeof utcDateString === 'string') {
+    // If it's a string, treat it as UTC
+    return new Date(utcDateString + (utcDateString.includes('Z') ? '' : 'Z'));
+  }
+  return utcDateString;
+}
