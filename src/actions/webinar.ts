@@ -5,29 +5,19 @@ import { OnAuthenticateUser } from "./auth";
 import { prismaClient } from "@/lib/prismaClient";
 import { revalidatePath } from "next/cache";
 import { WebinarStatusEnum } from "@prisma/client";
-
-function combineDateTime(
-  date: Date,
-  timeStr: string,
-  timeFormat: "AM" | "PM"
-): Date {
-  const [hoursStr, minutesStr] = timeStr.split(":");
-  let hours = Number.parseInt(hoursStr, 10);
-  const minutes = Number.parseInt(minutesStr || "0", 10);
-
-  if (timeFormat === "PM" && hours < 12) {
-    hours += 12; // Convert to 24-hour format
-  } else if (timeFormat === "AM" && hours === 12) {
-    hours = 0; // Midnight case
-  }
-
-  const result = new Date(date);
-  result.setHours(hours, minutes, 0, 0); // Set hours and minutes
-  return result;
-}
+import { combineLocalDateTime } from "@/lib/utils";
 
 export const createWebinar = async (formData: WebinarFormState) => {
   try {
+    // Log server timezone information for debugging
+    const serverTime = new Date();
+    console.log("Server timezone info:", {
+      serverTime: serverTime.toISOString(),
+      localTime: serverTime.toString(),
+      timezoneOffset: serverTime.getTimezoneOffset(),
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    });
+
     const user = await OnAuthenticateUser();
 
     if (!user.user) {
@@ -56,14 +46,30 @@ export const createWebinar = async (formData: WebinarFormState) => {
       return { status: 400, message: "Time is required" };
     }
 
-    const combinedDateTime = combineDateTime(
-      new Date(formData.basicInfo.date),
+    const combinedDateTime = combineLocalDateTime(
+      formData.basicInfo.date!,
       formData.basicInfo.time,
       formData.basicInfo.timeFormat || "AM"
     );
 
+    // Add a small buffer (5 minutes) to account for processing time and timezone differences
     const now = new Date();
-    if (combinedDateTime < now) {
+    const bufferTime = 5 * 60 * 1000; // 5 minutes in milliseconds
+    const minimumDateTime = new Date(now.getTime() - bufferTime);
+
+    // Debug logging for timezone issues
+    console.log("Webinar date validation:", {
+      inputDate: formData.basicInfo.date,
+      inputTime: formData.basicInfo.time,
+      inputTimeFormat: formData.basicInfo.timeFormat,
+      combinedDateTime: combinedDateTime.toISOString(),
+      serverTime: now.toISOString(),
+      minimumDateTime: minimumDateTime.toISOString(),
+      timezoneOffset: now.getTimezoneOffset(),
+      isValidTime: combinedDateTime >= minimumDateTime,
+    });
+
+    if (combinedDateTime < minimumDateTime) {
       return {
         status: 400,
         message: "Webinar date and time can not be in the past",

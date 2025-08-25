@@ -40,15 +40,29 @@ const BasicInfoStep = () => {
   };
 
   const handleDateChange = (newDate: Date | undefined) => {
-    updateBasicInfoField("date", newDate?.toISOString() || "");
-
     if (newDate) {
+      // Store the date in YYYY-MM-DD format to avoid timezone issues
+      const year = newDate.getFullYear();
+      const month = String(newDate.getMonth() + 1).padStart(2, "0");
+      const day = String(newDate.getDate()).padStart(2, "0");
+      const dateString = `${year}-${month}-${day}`;
+
+      updateBasicInfoField("date", dateString);
+
+      // Check if the selected date is in the past (local comparison)
       const today = new Date();
       today.setHours(0, 0, 0, 0); // Reset time to midnight
+      newDate.setHours(0, 0, 0, 0); // Reset selected date time to midnight
+
       if (newDate < today) {
-        updateBasicInfoField("date", today.toISOString());
+        const todayString = `${today.getFullYear()}-${String(
+          today.getMonth() + 1
+        ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+        updateBasicInfoField("date", todayString);
         toast.error("Webinar date cannot be in the past. Setting to today.");
       }
+    } else {
+      updateBasicInfoField("date", "");
     }
   };
 
@@ -120,13 +134,15 @@ const BasicInfoStep = () => {
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "PPP") : "Select date"}
+                {date
+                  ? format(new Date(date + "T00:00:00"), "PPP")
+                  : "Select date"}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 !bg-background border border-input">
               <Calendar
                 mode="single"
-                selected={date ? new Date(date) : undefined}
+                selected={date ? new Date(date + "T00:00:00") : undefined}
                 onSelect={handleDateChange}
                 initialFocus
                 className="bg-background"
