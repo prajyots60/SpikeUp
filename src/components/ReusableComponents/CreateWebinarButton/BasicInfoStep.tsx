@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
+import { cn, ymdInIST, formatISTDateLabel, istDateFromYMD } from "@/lib/utils";
 import { useWebinarStore } from "@/store/useWebinarStore";
 import { format } from "date-fns";
 import { CalendarIcon, Clock, Upload } from "lucide-react";
@@ -40,15 +40,20 @@ const BasicInfoStep = () => {
   };
 
   const handleDateChange = (newDate: Date | undefined) => {
-    updateBasicInfoField("date", newDate?.toISOString() || "");
+    if (!newDate) {
+      updateBasicInfoField("date", "");
+      return;
+    }
 
-    if (newDate) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Reset time to midnight
-      if (newDate < today) {
-        updateBasicInfoField("date", today.toISOString());
-        toast.error("Webinar date cannot be in the past. Setting to today.");
-      }
+    // Convert picked date to YYYY-MM-DD in IST to avoid UTC drift
+    const pickedYMD = ymdInIST(newDate);
+    updateBasicInfoField("date", pickedYMD);
+
+    // Prevent past dates based on IST calendar date
+    const todayYMD = ymdInIST(new Date());
+    if (pickedYMD < todayYMD) {
+      updateBasicInfoField("date", todayYMD);
+      toast.error("Webinar date cannot be in the past. Setting to today.");
     }
   };
 
@@ -120,20 +125,20 @@ const BasicInfoStep = () => {
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "PPP") : "Select date"}
+                {date ? formatISTDateLabel(date) : "Select date"}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 !bg-background border border-input">
               <Calendar
                 mode="single"
-                selected={date ? new Date(date) : undefined}
+                selected={date ? istDateFromYMD(date as string) : undefined}
                 onSelect={handleDateChange}
                 initialFocus
                 className="bg-background"
                 disabled={(date) => {
                   const today = new Date();
                   today.setHours(0, 0, 0, 0); // Reset time
-                  return date < today; // Disable past dates
+                  return date < today; // Disable past dates (client local)
                 }}
               />
             </PopoverContent>

@@ -3,28 +3,11 @@
 import { WebinarFormState } from "@/store/useWebinarStore";
 import { OnAuthenticateUser } from "./auth";
 import { prismaClient } from "@/lib/prismaClient";
+import { combineISTDateTimeToUTC } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { WebinarStatusEnum } from "@prisma/client";
 
-function combineDateTime(
-  date: Date,
-  timeStr: string,
-  timeFormat: "AM" | "PM"
-): Date {
-  const [hoursStr, minutesStr] = timeStr.split(":");
-  let hours = Number.parseInt(hoursStr, 10);
-  const minutes = Number.parseInt(minutesStr || "0", 10);
-
-  if (timeFormat === "PM" && hours < 12) {
-    hours += 12; // Convert to 24-hour format
-  } else if (timeFormat === "AM" && hours === 12) {
-    hours = 0; // Midnight case
-  }
-
-  const result = new Date(date);
-  result.setHours(hours, minutes, 0, 0); // Set hours and minutes
-  return result;
-}
+// Deprecated in favor of combineISTDateTimeToUTC in utils
 
 export const createWebinar = async (formData: WebinarFormState) => {
   try {
@@ -56,8 +39,9 @@ export const createWebinar = async (formData: WebinarFormState) => {
       return { status: 400, message: "Time is required" };
     }
 
-    const combinedDateTime = combineDateTime(
-      new Date(formData.basicInfo.date),
+    // Expect date as YYYY-MM-DD (IST calendar) from client; combine to a UTC instant
+    const combinedDateTime = combineISTDateTimeToUTC(
+      String(formData.basicInfo.date),
       formData.basicInfo.time,
       formData.basicInfo.timeFormat || "AM"
     );

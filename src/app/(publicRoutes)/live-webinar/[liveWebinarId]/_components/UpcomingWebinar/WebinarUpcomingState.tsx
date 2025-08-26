@@ -10,6 +10,7 @@ import { changeWebinarStatus } from "@/actions/webinar";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
+import { formatISTDateLabel, formatISTTimeLabel } from "@/lib/utils";
 import { createAndStartStream } from "@/actions/streamIo";
 
 type Props = {
@@ -112,17 +113,14 @@ const WebinarUpcomingState = ({ webinar, currentUser }: Props) => {
         <h3 className="text-2xl font-semibold text-primary">{webinar.title}</h3>
         <p className="text-sm text-muted-foreground">{webinar.description}</p>
         <div className="w-full justify-center flex gap-2 flex-wrap items-center">
-          <Button
-            variant="outline"
-            className="rounded-md bg-secondary backdrop-blur-2xl"
-          >
+          <Button variant="outline" className="rounded-md bg-secondary backdrop-blur-2xl">
             <Calendar className="h-4 w-4 mr-2" />
-            {format(new Date(webinar.startTime), "dd MMM yyyy")}
+            {formatISTDateLabel(webinar.startTime)}
           </Button>
 
           <Button variant={"outline"}>
             <Clock className="h-4 w-4 mr-2" />
-            {format(new Date(webinar.startTime), "hh:mm a")}
+            {formatISTTimeLabel(webinar.startTime)}
           </Button>
         </div>
       </div>

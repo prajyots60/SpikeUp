@@ -1,5 +1,6 @@
 import { Webinar } from "@prisma/client";
 import { format } from "date-fns";
+import { formatISTDateLabel } from "@/lib/utils";
 import { Calendar, ListTree } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -40,7 +41,7 @@ const WebianrCard = ({ webinar }: Props) => {
           <div className="flex gap-2 justify-start items-center">
             <div className="flex gap-2 items-center text-xs text-muted-foreground">
               <Calendar size={14} />
-              <p>{format(new Date(webinar.startTime), "dd/MM/yyyy")}</p>
+              <p>{formatISTDateLabel(webinar.startTime)}</p>
             </div>
           </div>
         </Link>
