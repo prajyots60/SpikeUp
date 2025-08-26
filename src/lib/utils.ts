@@ -76,5 +76,9 @@ export function formatISTDateLabel(date: Date | string): string {
 }
 
 export function formatISTTimeLabel(date: Date | string): string {
-  return formatInIST(date, { hour: "2-digit", minute: "2-digit", hour12: true });
+  return formatInIST(date, {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
 }

@@ -23,7 +23,7 @@ const Signup = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                Spotlight
+                SpikeUp
               </h1>
               <p className="text-muted-foreground text-sm">
                 AI Assistant Webinar Management
@@ -153,7 +153,7 @@ const Signup = () => {
                 <div className="absolute -top-1 left-1/2 w-0.5 h-3 bg-gradient-to-t from-primary/60 to-transparent transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
               <div className="text-center">
-                <h1 className="text-2xl font-bold">Spotlight</h1>
+                <h1 className="text-2xl font-bold">SpikeUp</h1>
                 <p className="text-muted-foreground text-sm">
                   AI Assistant Webinar Management
                 </p>

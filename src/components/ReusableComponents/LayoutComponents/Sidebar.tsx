@@ -33,13 +33,13 @@ const Sidebar = () => {
           {/* Inner pulsing circle */}
           <div className="absolute inset-2 bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 animate-pulse"></div>
 
-          {/* Brand spotlight effect */}
+          {/* Brand SpikeUp effect */}
           {/* <div className="absolute top-0 left-0 w-2 h-2 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full animate-ping opacity-60"></div> */}
 
           {/* Live indicator dot */}
           {/* <div className="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full animate-pulse border border-background"></div> */}
 
-          {/* Spotlight beam effect */}
+          {/* SpikeUp beam effect */}
           <div className="absolute -top-1 left-1/2 w-0.5 h-3 bg-gradient-to-t from-primary/60 to-transparent transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </PurpleIcon>
       </div>

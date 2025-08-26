@@ -41,7 +41,7 @@ export default async function RootPage() {
                 ></div>
                 <div className="absolute -top-0.5 left-1/2 w-0.5 h-2 bg-gradient-to-t from-primary/60 to-transparent transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
-              <span className="text-xl font-bold">Spotlight</span>
+              <span className="text-xl font-bold">SpikeUp</span>
             </div>
 
             {/* Navigation Links */}
@@ -114,7 +114,7 @@ export default async function RootPage() {
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Create, manage, and optimize high-converting webinars with
               intelligent automation. Join thousands of businesses scaling their
-              revenue with Spotlight.
+              revenue with SpikeUp.
             </p>
 
             {/* CTA Buttons */}
@@ -273,7 +273,7 @@ export default async function RootPage() {
                 role: "Marketing Director",
                 company: "TechCorp",
                 content:
-                  "Spotlight transformed our webinar strategy. The AI insights helped us increase engagement by 300% and our conversion rates doubled.",
+                  "SpikeUp transformed our webinar strategy. The AI insights helped us increase engagement by 300% and our conversion rates doubled.",
                 rating: 5,
               },
               {
@@ -281,7 +281,7 @@ export default async function RootPage() {
                 role: "CEO",
                 company: "StartupXYZ",
                 content:
-                  "The automation features saved us 20 hours per week. We can now focus on content while Spotlight handles everything else.",
+                  "The automation features saved us 20 hours per week. We can now focus on content while SpikeUp handles everything else.",
                 rating: 5,
               },
               {
@@ -338,7 +338,7 @@ export default async function RootPage() {
               Ready to revolutionize your webinars?
             </h2>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Join thousands of businesses using Spotlight to create engaging,
+              Join thousands of businesses using SpikeUp to create engaging,
               high-converting webinars with AI automation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -366,7 +366,7 @@ export default async function RootPage() {
               <div className="iconBackground p-2">
                 <Triangle className="w-5 h-5 fill-primary/20 stroke-2" />
               </div>
-              <span className="font-semibold">Spotlight</span>
+              <span className="font-semibold">SpikeUp</span>
               <span className="text-muted-foreground text-sm">
                 AI Assistant Webinar Management
               </span>
@@ -381,7 +381,7 @@ export default async function RootPage() {
               <a href="#" className="hover:text-foreground transition-colors">
                 Support
               </a>
-              <span>© 2024 Spotlight. All rights reserved.</span>
+              <span>© 2024 SpikeUp. All rights reserved.</span>
             </div>
           </div>
         </div>

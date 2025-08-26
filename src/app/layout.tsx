@@ -11,7 +11,7 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Spotlight",
+  title: "SpikeUp",
   description: "Your AI-powered assistant for Webinar Management",
 };
 
