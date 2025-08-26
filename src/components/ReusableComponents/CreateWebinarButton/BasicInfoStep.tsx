@@ -18,7 +18,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn, ymdInIST, formatISTDateLabel, istDateFromYMD } from "@/lib/utils";
 import { useWebinarStore } from "@/store/useWebinarStore";
-import { format } from "date-fns";
 import { CalendarIcon, Clock, Upload } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";

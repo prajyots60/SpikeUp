@@ -1,5 +1,4 @@
 import { Webinar } from "@prisma/client";
-import { format } from "date-fns";
 import { formatISTDateLabel } from "@/lib/utils";
 import { Calendar, ListTree } from "lucide-react";
 import Image from "next/image";
