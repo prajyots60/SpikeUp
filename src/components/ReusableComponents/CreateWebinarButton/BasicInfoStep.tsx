@@ -83,7 +83,6 @@ const BasicInfoStep = () => {
     updateBasicInfoField("videoUrl", "");
     updateBasicInfoField("videoKey", "");
     updateBasicInfoField("isPreRecorded", false);
-    toast.error(`Video upload failed: ${error}`);
   };
 
   return (
@@ -225,7 +224,7 @@ const BasicInfoStep = () => {
 
         <DirectUpload
           label="Upload Video File"
-          accept="video/mp4,video/webm,video/quicktime,video/x-msvideo,video/avi"
+          accept="video/mp4,video/webm,video/quicktime,video/x-msvideo,video/avi,video/x-matroska,.mkv"
           maxSize={500}
           fileType="video"
           onUploadComplete={handleVideoUploadComplete}

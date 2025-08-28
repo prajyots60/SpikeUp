@@ -23,6 +23,8 @@ export const R2_CONFIG = {
     "video/quicktime",
     "video/x-msvideo",
     "video/avi",
+    "video/x-matroska",
+    "video/mpeg",
   ],
   ALLOWED_IMAGE_TYPES: [
     "image/jpeg",

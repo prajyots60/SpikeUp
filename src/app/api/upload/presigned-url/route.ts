@@ -40,6 +40,11 @@ export async function POST(request: NextRequest) {
             "video/quicktime",
             "video/x-msvideo",
             "video/avi",
+            "video/x-matroska", // MKV files
+            "video/mpeg",
+            "video/x-ms-wmv", // WMV files
+            "video/x-flv", // FLV files
+            "video/x-m4v", // M4V files
           ]
         : uploadType === "image"
         ? ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"]
