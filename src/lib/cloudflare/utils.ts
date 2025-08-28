@@ -6,9 +6,6 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { r2Client, R2_CONFIG, FileType } from "./r2-client";
 
-/**
- * Generate a unique file name with timestamp and random string
- */
 export const generateFileName = (
   originalName: string,
   type: FileType
@@ -18,17 +15,13 @@ export const generateFileName = (
   const extension = originalName.split(".").pop()?.toLowerCase() || "";
   const cleanName = originalName.replace(/[^a-zA-Z0-9.-]/g, "_");
 
-  return `${type}s/${timestamp}_${randomString}_${cleanName}`;
+  return `${type}s/${timestamp}_${randomString}_${cleanName}.${extension}`;
 };
 
-/**
- * Validate file type and size
- */
 export const validateFile = (
   file: File,
   type: FileType
 ): { valid: boolean; error?: string } => {
-  // Check file size
   if (file.size > R2_CONFIG.MAX_FILE_SIZE) {
     return {
       valid: false,
@@ -38,7 +31,6 @@ export const validateFile = (
     };
   }
 
-  // Check file type
   const allowedTypes =
     type === "video"
       ? R2_CONFIG.ALLOWED_VIDEO_TYPES
@@ -59,9 +51,6 @@ export const validateFile = (
   return { valid: true };
 };
 
-/**
- * Generate presigned URL for direct client upload to Cloudflare R2
- */
 export const generatePresignedUploadUrl = async (
   fileName: string,
   fileType: string,
@@ -82,7 +71,7 @@ export const generatePresignedUploadUrl = async (
       Bucket: R2_CONFIG.BUCKET_NAME,
       Key: key,
       ContentType: fileType,
-      // Add metadata for better tracking
+
       Metadata: {
         "original-name": fileName,
         "upload-type": type,
@@ -94,7 +83,6 @@ export const generatePresignedUploadUrl = async (
       expiresIn: 3600, // 1 hour
     });
 
-    // Generate public URL (remove query parameters for clean URL)
     const publicUrl = `${R2_CONFIG.BASE_URL}/${key}`;
 
     console.log("Generated presigned URL:", {
@@ -121,9 +109,7 @@ export const generatePresignedUploadUrl = async (
   }
 };
 
-/**
- * Upload file to Cloudflare R2
- */
+//TODO: Not in use now
 export const uploadToR2 = async (
   file: File,
   type: FileType
@@ -174,9 +160,7 @@ export const uploadToR2 = async (
   }
 };
 
-/**
- * Delete file from Cloudflare R2
- */
+//TODO: Not in use now
 export const deleteFromR2 = async (
   key: string
 ): Promise<{ success: boolean; error?: string }> => {

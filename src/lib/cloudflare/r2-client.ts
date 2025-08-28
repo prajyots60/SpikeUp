@@ -13,7 +13,7 @@ export const r2Client = new S3Client({
 
 // Configuration constants
 export const R2_CONFIG = {
-  BUCKET_NAME: "spikeup", // Extracted from your CLOUDFLARE_API_URL
+  BUCKET_NAME: process.env.CLOUDFLARE_BUCKET_NAME!,
   ACCOUNT_ID: process.env.CLOUDFLARE_ACCOUNT_ID!,
   BASE_URL: process.env.CLOUDFLARE_API_URL!,
   MAX_FILE_SIZE: 500 * 1024 * 1024, // 500MB

@@ -95,6 +95,15 @@ export type WebinarWithPresenter = Webinar & {
   presenter: User;
 };
 
+export type RecordedWebinarData = Webinar & {
+  presenter: {
+    id: string;
+    name: string;
+    stripeConnectId: string | null;
+    profileImage: string;
+  };
+};
+
 export type StreamCallRecording = {
   filename: string;
   url: string;

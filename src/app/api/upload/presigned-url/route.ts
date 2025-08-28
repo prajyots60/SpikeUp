@@ -6,7 +6,6 @@ import { generatePresignedUploadUrl } from "@/lib/cloudflare/utils";
 
 export async function POST(request: NextRequest) {
   try {
-    // Authenticate user
     const user = await OnAuthenticateUser();
     if (!user.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -22,7 +21,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate upload type
     const validUploadTypes: FileType[] = ["video", "image", "document"];
     if (!validUploadTypes.includes(uploadType)) {
       return NextResponse.json(
@@ -32,13 +30,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    // Create a mock file object for validation
-    const mockFile = {
-      name: fileName,
-      type: fileType,
-      size: 0, // We'll validate size on the client side
-    } as File;
 
     // Validate file type (skip size validation for presigned URLs)
     const allowedTypes =
@@ -65,7 +56,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate presigned URL
     const result = await generatePresignedUploadUrl(
       fileName,
       fileType,

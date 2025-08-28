@@ -22,8 +22,14 @@ type Props = {
 };
 
 const CreateWebinarButton = ({ stripeProducts, assistants }: Props) => {
-  const { isModalOpen, setModalOpen, isComplete, setComplete, resetForm } =
-    useWebinarStore();
+  const {
+    isModalOpen,
+    setModalOpen,
+    isComplete,
+    setComplete,
+    resetForm,
+    formData,
+  } = useWebinarStore();
 
   const [webinarLink, setWebinarLink] = useState("");
 
@@ -52,9 +58,10 @@ const CreateWebinarButton = ({ stripeProducts, assistants }: Props) => {
 
   const handleComplete = (webinarId: string) => {
     setComplete(true);
-    setWebinarLink(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/live-webinar/${webinarId}`
-    );
+    const isPreRecorded = formData.basicInfo.isPreRecorded;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    const webinarPath = isPreRecorded ? "recorded-webinar" : "live-webinar";
+    setWebinarLink(`${baseUrl}/${webinarPath}/${webinarId}`);
   };
 
   const handleCreateNew = () => {

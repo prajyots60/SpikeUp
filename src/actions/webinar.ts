@@ -182,3 +182,59 @@ export const changeWebinarStatus = async (
     };
   }
 };
+
+export const getRecordedWebinarById = async (webinarId: string) => {
+  try {
+    const webinar = await prismaClient.webinar.findUnique({
+      where: { id: webinarId },
+      include: {
+        presenter: {
+          select: {
+            id: true,
+            name: true,
+            stripeConnectId: true,
+            profileImage: true,
+          },
+        },
+      },
+    });
+
+    if (!webinar) {
+      return {
+        status: 404,
+        message: "Webinar not found",
+        webinar: null,
+      };
+    }
+
+    if (!webinar.isPreRecorded) {
+      return {
+        status: 400,
+        message: "This webinar is not pre-recorded",
+        webinar: null,
+        redirectTo: `/live-webinar/${webinarId}`,
+      };
+    }
+
+    if (!webinar.recordingUrl) {
+      return {
+        status: 400,
+        message: "No recording available for this webinar",
+        webinar: null,
+      };
+    }
+
+    return {
+      status: 200,
+      message: "Webinar found successfully",
+      webinar,
+    };
+  } catch (error) {
+    console.error("Error fetching recorded webinar:", error);
+    return {
+      status: 500,
+      message: "Internal server error while fetching webinar",
+      webinar: null,
+    };
+  }
+};

@@ -10,12 +10,13 @@ type Props = {
 };
 
 const WebianrCard = ({ webinar }: Props) => {
+  const webinarUrl = webinar.isPreRecorded
+    ? `/recorded-webinar/${webinar?.id}`
+    : `/live-webinar/${webinar?.id}`;
+
   return (
     <div className="flex gap-3 flex-col items-start w-full">
-      <Link
-        href={`/live-webinar/${webinar?.id}`}
-        className="w-full max-w-[350px]"
-      >
+      <Link href={webinarUrl} className="w-full max-w-[350px]">
         <Image
           src={"/course_thumbnail.jpg"}
           alt="Webinar Thumbnail"
@@ -25,10 +26,7 @@ const WebianrCard = ({ webinar }: Props) => {
         />
       </Link>
       <div className="w-full flex justify-between gap-3 items-center">
-        <Link
-          href={`/live-webinar/${webinar?.id}`}
-          className="flex flex-col gap-2 items-start"
-        >
+        <Link href={webinarUrl} className="flex flex-col gap-2 items-start">
           <div>
             <p className="text-sm text-primary font-semibold">
               {webinar?.title}

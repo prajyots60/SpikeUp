@@ -3,6 +3,7 @@ import { getWebinarById } from "@/actions/webinar";
 import React from "react";
 import RenderWebinar from "./_components/RenderWebinar";
 import { WebinarWithPresenter, StreamCallRecording } from "@/lib/type";
+import { redirect } from "next/navigation";
 
 type Props = {
   params: Promise<{
@@ -18,6 +19,11 @@ const page = async ({ params, searchParams }: Props) => {
   const { error } = await searchParams;
 
   const webinarData = await getWebinarById(liveWebinarId);
+
+  // Redirect to recorded webinar route if this is a pre-recorded webinar
+  if (webinarData?.isPreRecorded) {
+    redirect(`/recorded-webinar/${liveWebinarId}`);
+  }
 
   const recording: StreamCallRecording | null = null;
 
