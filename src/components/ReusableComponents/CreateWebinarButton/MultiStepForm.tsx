@@ -1,5 +1,5 @@
 import { useWebinarStore } from "@/store/useWebinarStore";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle, Check, ChevronRight, Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 import { createWebinar } from "@/actions/webinar";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import GlobalUploadStatus from "./GlobalUploadStatus";
+import { useVideoUpload } from "@/hooks/useVideoUpload";
 
 type Step = {
   id: string;
@@ -25,7 +27,12 @@ const MultiStepForm = ({ steps, onComplete }: Props) => {
   const { formData, validateStep, isSubmitting, setSubmitting, setModalOpen } =
     useWebinarStore();
 
+  const { deleteVideoFromCloudflare, clearVideoUpload } = useVideoUpload();
+
   const router = useRouter();
+
+  // Get video upload state
+  const isVideoUploading = formData.basicInfo.isVideoUploading || false;
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
@@ -35,8 +42,35 @@ const MultiStepForm = ({ steps, onComplete }: Props) => {
   const isFirstStep = currentStepIndex === 0;
   const isLastStep = currentStepIndex === steps.length - 1;
 
-  const handleBack = () => {
+  // Cleanup video on page unload/refresh if webinar wasn't completed
+  useEffect(() => {
+    const handleBeforeUnload = async () => {
+      const videoKey = formData.basicInfo.videoKey;
+      if (videoKey) {
+        // Use sendBeacon for cleanup on page unload
+        navigator.sendBeacon(
+          "/api/upload/delete",
+          JSON.stringify({ key: videoKey })
+        );
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [formData.basicInfo.videoKey]);
+
+  const handleBack = async () => {
     if (isFirstStep) {
+      // Clean up any uploaded video before closing modal
+      const videoKey = formData.basicInfo.videoKey;
+      if (videoKey) {
+        console.log("Cleaning up video before closing modal");
+        await deleteVideoFromCloudflare(videoKey);
+        await clearVideoUpload();
+      }
       setModalOpen(false);
     } else {
       setCurrentStepIndex(currentStepIndex - 1);
@@ -60,16 +94,33 @@ const MultiStepForm = ({ steps, onComplete }: Props) => {
       try {
         const result = await createWebinar(formData);
         if (result.status === 200 && result.webinarId) {
+          // SUCCESS: Don't clean up video - it's now part of the webinar
           toast.success("Your webinar has been created successfully!");
           onComplete(result.webinarId);
         } else {
+          // FAILURE: Clean up video since webinar creation failed
+          const videoKey = formData.basicInfo.videoKey;
+          if (videoKey) {
+            console.log("Webinar creation failed, cleaning up video");
+            await deleteVideoFromCloudflare(videoKey);
+            await clearVideoUpload();
+          }
           toast.error(result.message || "Failed to create webinar");
         }
 
         router.refresh();
       } catch (error) {
         console.error("Error submitting form:", error);
-        toast.success(
+
+        // FAILURE: Clean up video since webinar creation failed
+        const videoKey = formData.basicInfo.videoKey;
+        if (videoKey) {
+          console.log("Webinar creation error, cleaning up video");
+          await deleteVideoFromCloudflare(videoKey);
+          await clearVideoUpload();
+        }
+
+        toast.error(
           "An error occurred while submitting the form. Please try again."
         );
         setValidationErrors(
@@ -187,6 +238,11 @@ const MultiStepForm = ({ steps, onComplete }: Props) => {
                       </p>
                     </div>
                   </div>
+
+                  {/* Show upload status below Additional Information step */}
+                  <div className="mt-12">
+                    {step.id === "additionalInfo" && <GlobalUploadStatus />}
+                  </div>
                 </div>
               );
             })}
@@ -240,12 +296,21 @@ const MultiStepForm = ({ steps, onComplete }: Props) => {
         >
           {isFirstStep ? "Cancel" : "Back"}
         </Button>
-        <Button type="submit" onClick={handleNext} disabled={isSubmitting}>
+        <Button
+          type="submit"
+          onClick={handleNext}
+          disabled={isSubmitting || (isLastStep && isVideoUploading)}
+        >
           {isLastStep ? (
             isSubmitting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
                 Creating...
+              </>
+            ) : isVideoUploading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                Uploading video...
               </>
             ) : (
               "Complete"

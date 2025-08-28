@@ -70,41 +70,45 @@ const DirectUpload: React.FC<DirectUploadProps> = ({
     // Check file type - handle both MIME types and extensions
     const allowedTypes = accept.split(",").map((type) => type.trim());
     const fileName = file.name.toLowerCase();
-    const fileExtension = fileName.substring(fileName.lastIndexOf('.'));
-    
+    const fileExtension = fileName.substring(fileName.lastIndexOf("."));
+
     // Common video MIME types for better support
     const videoMimeTypes: Record<string, string> = {
-      '.mp4': 'video/mp4',
-      '.webm': 'video/webm',
-      '.ogg': 'video/ogg',
-      '.mov': 'video/quicktime',
-      '.avi': 'video/x-msvideo',
-      '.mkv': 'video/x-matroska',
-      '.wmv': 'video/x-ms-wmv',
-      '.flv': 'video/x-flv',
-      '.m4v': 'video/x-m4v'
+      ".mp4": "video/mp4",
+      ".webm": "video/webm",
+      ".ogg": "video/ogg",
+      ".mov": "video/quicktime",
+      ".avi": "video/x-msvideo",
+      ".mkv": "video/x-matroska",
+      ".wmv": "video/x-ms-wmv",
+      ".flv": "video/x-flv",
+      ".m4v": "video/x-m4v",
     };
 
     // Check if file type matches allowed types
     let isValidType = false;
-    
+
     // Check direct MIME type match
     if (allowedTypes.includes(file.type)) {
       isValidType = true;
     }
-    
+
     // Check file extension match
     if (!isValidType && allowedTypes.includes(fileExtension)) {
       isValidType = true;
     }
-    
+
     // Check if it's a video file and we're accepting videos
-    if (!isValidType && fileType === 'video') {
+    if (!isValidType && fileType === "video") {
       // If accept includes video/* or specific video types, check common video extensions
-      const acceptsVideo = allowedTypes.some(type => 
-        type.includes('video/') || type.includes('.mp4') || type.includes('.mkv') || type.includes('.webm')
+      const acceptsVideo = allowedTypes.some(
+        (type) =>
+          type.includes("video/") ||
+          type.includes(".mp4") ||
+          type.includes(".mkv") ||
+          type.includes(".webm")
       );
-      
+
       if (acceptsVideo && videoMimeTypes[fileExtension]) {
         isValidType = true;
       }
@@ -113,7 +117,9 @@ const DirectUpload: React.FC<DirectUploadProps> = ({
     if (!isValidType) {
       return {
         valid: false,
-        error: `Invalid file type. File: ${file.type || 'unknown'} (${fileExtension}). Allowed types: ${allowedTypes.join(", ")}`,
+        error: `Invalid file type. File: ${
+          file.type || "unknown"
+        } (${fileExtension}). Allowed types: ${allowedTypes.join(", ")}`,
       };
     }
 

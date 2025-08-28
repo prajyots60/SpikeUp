@@ -21,6 +21,16 @@ export type WebinarFormState = {
     thumbnailUrl?: string;
     thumbnailKey?: string;
     isPreRecorded?: boolean;
+    // Upload state
+    isVideoUploading?: boolean;
+    videoUploadProgress?: {
+      loaded: number;
+      total: number;
+      percentage: number;
+    };
+    videoUploadStatus?: "idle" | "uploading" | "success" | "error";
+    // XMLHttpRequest reference for cancelling uploads
+    uploadXhr?: XMLHttpRequest | null;
   };
   cta: {
     ctaLabel?: string;
@@ -50,6 +60,14 @@ const initialState: WebinarFormState = {
     thumbnailUrl: "",
     thumbnailKey: "",
     isPreRecorded: false,
+    // Upload state
+    isVideoUploading: false,
+    videoUploadProgress: {
+      loaded: 0,
+      total: 0,
+      percentage: 0,
+    },
+    videoUploadStatus: "idle",
   },
   cta: {
     ctaLabel: "",

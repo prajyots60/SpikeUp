@@ -18,26 +18,40 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn, ymdInIST, formatISTDateLabel, istDateFromYMD } from "@/lib/utils";
 import { useWebinarStore } from "@/store/useWebinarStore";
-import { CalendarIcon, Clock, FileVideo } from "lucide-react";
+import {
+  CalendarIcon,
+  Clock,
+  FileVideo,
+  CheckCircle,
+  Loader2,
+  Upload,
+  Video,
+  X,
+} from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
-import DirectUpload from "@/components/ReusableComponents/DirectUpload/DirectUpload";
+import { useVideoUpload } from "@/hooks/useVideoUpload";
+import { Progress } from "@/components/ui/progress";
 
 const BasicInfoStep = () => {
   const { formData, updateBasicInfoField, getStepValidationErrors } =
     useWebinarStore();
 
+  const {
+    isVideoUploading,
+    videoUploadProgress,
+    videoUploadStatus,
+    videoFile,
+    videoUrl: uploadedVideoUrl,
+    startVideoUpload,
+    cancelVideoUpload,
+    clearVideoUpload,
+  } = useVideoUpload();
+
   const errors = getStepValidationErrors("basicInfo");
 
-  const {
-    webinarName,
-    description,
-    date,
-    time,
-    timeFormat,
-    videoUrl,
-    isPreRecorded,
-  } = formData.basicInfo;
+  const { webinarName, description, date, time, timeFormat, isPreRecorded } =
+    formData.basicInfo;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -68,21 +82,68 @@ const BasicInfoStep = () => {
     updateBasicInfoField("timeFormat", value);
   };
 
-  const handleVideoUploadComplete = (url: string, key: string) => {
-    updateBasicInfoField("videoUrl", url);
-    updateBasicInfoField("videoKey", key);
-    updateBasicInfoField("isPreRecorded", true);
-    toast.success("Video uploaded successfully!");
+  const handleFileSelect = async (file: File) => {
+    if (isVideoUploading) return;
+    await startVideoUpload(file);
   };
 
-  const handleVideoUploadStart = () => {
-    updateBasicInfoField("isPreRecorded", true);
+  const validateFile = (file: File): { valid: boolean; error?: string } => {
+    // Check file size (500MB max)
+    const maxSizeBytes = 500 * 1024 * 1024;
+    if (file.size > maxSizeBytes) {
+      return {
+        valid: false,
+        error: `File size must be less than 500MB`,
+      };
+    }
+
+    // Check file type
+    const allowedTypes = [
+      "video/mp4",
+      "video/webm",
+      "video/quicktime",
+      "video/x-msvideo",
+      "video/avi",
+      "video/x-matroska",
+    ];
+    const fileName = file.name.toLowerCase();
+    const fileExtension = fileName.substring(fileName.lastIndexOf("."));
+    const allowedExtensions = [".mp4", ".webm", ".mov", ".avi", ".mkv"];
+
+    if (
+      !allowedTypes.includes(file.type) &&
+      !allowedExtensions.includes(fileExtension)
+    ) {
+      return {
+        valid: false,
+        error: `Invalid file type. Allowed: MP4, WebM, MOV, AVI, MKV`,
+      };
+    }
+
+    return { valid: true };
   };
 
-  const handleVideoUploadError = (error: string) => {
-    updateBasicInfoField("videoUrl", "");
-    updateBasicInfoField("videoKey", "");
-    updateBasicInfoField("isPreRecorded", false);
+  const handleFileInputChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const validation = validateFile(file);
+    if (!validation.valid) {
+      toast.error(validation.error);
+      return;
+    }
+
+    await handleFileSelect(file);
+  };
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
   return (
@@ -222,17 +283,129 @@ const BasicInfoStep = () => {
           )}
         </div>
 
-        <DirectUpload
-          label="Upload Video File"
-          accept="video/mp4,video/webm,video/quicktime,video/x-msvideo,video/avi,video/x-matroska,.mkv"
-          maxSize={500}
-          fileType="video"
-          onUploadComplete={handleVideoUploadComplete}
-          onUploadStart={handleVideoUploadStart}
-          onUploadError={handleVideoUploadError}
-          currentFile={videoUrl}
-          className="w-full"
-        />
+        {/* Custom Video Upload Component */}
+        <div className="space-y-4">
+          <Label className="text-sm font-medium">Upload Video File</Label>
+
+          <div
+            className={cn(
+              "relative border-2 border-dashed rounded-lg p-6 transition-all",
+              videoUploadStatus === "success"
+                ? "border-green-500 bg-green-500/10"
+                : videoUploadStatus === "error"
+                ? "border-red-500 bg-red-500/10"
+                : isVideoUploading
+                ? "border-purple-500 bg-purple-500/10"
+                : "border-gray-300 hover:border-gray-400"
+            )}
+          >
+            {/* File Input - Only show when not uploading */}
+            {!isVideoUploading && (
+              <input
+                type="file"
+                accept="video/mp4,video/webm,video/quicktime,video/x-msvideo,video/avi,video/x-matroska,.mkv"
+                onChange={handleFileInputChange}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+            )}
+
+            {/* Upload Content */}
+            <div className="text-center">
+              {isVideoUploading ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm text-gray-600">
+                      Uploading {videoFile?.name}...
+                    </p>
+                    <Progress
+                      value={videoUploadProgress.percentage}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-gray-500">
+                      {formatFileSize(videoUploadProgress.loaded)} /{" "}
+                      {formatFileSize(videoUploadProgress.total)} (
+                      {videoUploadProgress.percentage}%)
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={async () => {
+                        await cancelVideoUpload();
+                      }}
+                      className="mt-2"
+                    >
+                      Cancel Upload
+                    </Button>
+                  </div>
+                </div>
+              ) : videoUploadStatus === "success" && uploadedVideoUrl ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-center text-green-600">
+                    <CheckCircle className="w-8 h-8" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-green-700">
+                      Upload successful!
+                    </p>
+                    <p className="text-xs text-gray-600">{videoFile?.name}</p>
+                    <p className="text-xs text-gray-500">
+                      {videoFile ? formatFileSize(videoFile.size) : ""}
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={async () => await clearVideoUpload()}
+                    className="mt-2"
+                  >
+                    <X className="w-4 h-4 mr-1" />
+                    Clear
+                  </Button>
+                </div>
+              ) : videoUploadStatus === "error" ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-center text-red-600">
+                    <X className="w-8 h-8" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-red-700">
+                      Upload failed
+                    </p>
+                    <p className="text-xs text-gray-600">{videoFile?.name}</p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={async () => await clearVideoUpload()}
+                    className="mt-2"
+                  >
+                    Try Again
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-center text-gray-400">
+                    <Video className="w-8 h-8" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium">
+                      Drag and drop your video here, or{" "}
+                      <span className="text-purple-600 hover:text-purple-700 cursor-pointer">
+                        browse
+                      </span>
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Max file size: 500MB • Supports: MP4, WebM, MOV, AVI, MKV
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
