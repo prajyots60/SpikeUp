@@ -14,6 +14,13 @@ export type WebinarFormState = {
     date?: string;
     time?: string;
     timeFormat?: "AM" | "PM";
+    videoFile?: File | null;
+    videoUrl?: string;
+    videoKey?: string;
+    thumbnailFile?: File | null;
+    thumbnailUrl?: string;
+    thumbnailKey?: string;
+    isPreRecorded?: boolean;
   };
   cta: {
     ctaLabel?: string;
@@ -36,6 +43,13 @@ const initialState: WebinarFormState = {
     date: undefined,
     time: "",
     timeFormat: "AM",
+    videoFile: null,
+    videoUrl: "",
+    videoKey: "",
+    thumbnailFile: null,
+    thumbnailUrl: "",
+    thumbnailKey: "",
+    isPreRecorded: false,
   },
   cta: {
     ctaLabel: "",

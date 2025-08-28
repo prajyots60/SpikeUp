@@ -70,6 +70,12 @@ export const createWebinar = async (formData: WebinarFormState) => {
           : null,
         couponEnabled: formData.additionalInfo.couponEnabled || false,
         presenterId: presenterId,
+        // File upload fields
+        recordingUrl: formData.basicInfo.videoUrl || null,
+        recordingKey: formData.basicInfo.videoKey || null,
+        thumbnail: formData.basicInfo.thumbnailUrl || null,
+        thumbnailKey: formData.basicInfo.thumbnailKey || null,
+        isPreRecorded: formData.basicInfo.isPreRecorded || false,
       },
     });
 

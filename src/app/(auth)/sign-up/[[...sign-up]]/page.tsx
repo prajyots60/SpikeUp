@@ -120,22 +120,6 @@ const Signup = () => {
               <div className="text-xs text-muted-foreground">Uptime</div>
             </div>
           </div>
-
-          {/* Trust Indicators */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <CheckCircle className="w-4 h-4 text-green-500" />
-              <span>No credit card required</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <CheckCircle className="w-4 h-4 text-green-500" />
-              <span>Setup in under 2 minutes</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <CheckCircle className="w-4 h-4 text-green-500" />
-              <span>Cancel anytime</span>
-            </div>
-          </div>
         </div>
 
         {/* Right Side - Sign Up Form */}

@@ -79,7 +79,10 @@ model Webinar {
   aiAgentId     String?           @db.Uuid
   priceId     String?          @db.VarChar(255)
   recordingUrl  String?
+  recordingKey  String?          @db.VarChar(500) // R2 object key for deletion
   thumbnail     String?
+  thumbnailKey  String?          @db.VarChar(500) // R2 object key for deletion
+  isPreRecorded Boolean          @default(false)  // Flag to indicate pre-recorded webinar
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   deletedAt     DateTime?

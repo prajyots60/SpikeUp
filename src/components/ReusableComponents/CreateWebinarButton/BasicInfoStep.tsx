@@ -18,9 +18,10 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn, ymdInIST, formatISTDateLabel, istDateFromYMD } from "@/lib/utils";
 import { useWebinarStore } from "@/store/useWebinarStore";
-import { CalendarIcon, Clock, Upload } from "lucide-react";
+import { CalendarIcon, Clock, Upload, FileVideo } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
+import DirectUpload from "@/components/ReusableComponents/DirectUpload/DirectUpload";
 
 const BasicInfoStep = () => {
   const { formData, updateBasicInfoField, getStepValidationErrors } =
@@ -28,8 +29,16 @@ const BasicInfoStep = () => {
 
   const errors = getStepValidationErrors("basicInfo");
 
-  const { webinarName, description, date, time, timeFormat } =
-    formData.basicInfo;
+  const {
+    webinarName,
+    description,
+    date,
+    time,
+    timeFormat,
+    videoFile,
+    videoUrl,
+    isPreRecorded,
+  } = formData.basicInfo;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -58,6 +67,24 @@ const BasicInfoStep = () => {
 
   const handleTimeFormatChange = (value: "AM" | "PM") => {
     updateBasicInfoField("timeFormat", value);
+  };
+
+  const handleVideoUploadComplete = (url: string, key: string) => {
+    updateBasicInfoField("videoUrl", url);
+    updateBasicInfoField("videoKey", key);
+    updateBasicInfoField("isPreRecorded", true);
+    toast.success("Video uploaded successfully!");
+  };
+
+  const handleVideoUploadStart = () => {
+    updateBasicInfoField("isPreRecorded", true);
+  };
+
+  const handleVideoUploadError = (error: string) => {
+    updateBasicInfoField("videoUrl", "");
+    updateBasicInfoField("videoKey", "");
+    updateBasicInfoField("isPreRecorded", false);
+    toast.error(`Video upload failed: ${error}`);
   };
 
   return (
@@ -184,21 +211,30 @@ const BasicInfoStep = () => {
           )}
         </div>
       </div>
-      <div className="flex items-center gap-2 text-sm text-gray-400 mt-4">
-        <div className="flex items-center">
-          <Upload className="w-4 h-4 mr-1" />
-          Uploading a video makes this webinar pre-recorded.
+
+      {/* Video Upload Section */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <FileVideo className="w-4 h-4" />
+          <span>Upload a video to make this webinar pre-recorded</span>
+          {isPreRecorded && (
+            <span className="text-green-600 font-medium">
+              (Pre-recorded mode)
+            </span>
+          )}
         </div>
-        <Button
-          variant="outline"
-          className="ml-auto relative border border-input hover:bg-background"
-        >
-          Upload File
-          <Input
-            type="file"
-            className="absolute inset-0 opacity-0 cursor-pointer"
-          />
-        </Button>
+
+        <DirectUpload
+          label="Upload Video File"
+          accept="video/mp4,video/webm,video/quicktime,video/x-msvideo,video/avi"
+          maxSize={500}
+          fileType="video"
+          onUploadComplete={handleVideoUploadComplete}
+          onUploadStart={handleVideoUploadStart}
+          onUploadError={handleVideoUploadError}
+          currentFile={videoUrl}
+          className="w-full"
+        />
       </div>
     </div>
   );
