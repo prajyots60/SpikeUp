@@ -87,7 +87,9 @@ const BasicInfoStep = () => {
     await startVideoUpload(file);
   };
 
-  const validateFile = (file: File): { valid: boolean; error?: string } => {
+  const validateFile = (
+    file: File
+  ): { valid: boolean; error?: string; warning?: string } => {
     // Check file size (500MB max)
     const maxSizeBytes = 500 * 1024 * 1024;
     if (file.size > maxSizeBytes) {
@@ -104,11 +106,22 @@ const BasicInfoStep = () => {
       "video/quicktime",
       "video/x-msvideo",
       "video/avi",
-      "video/x-matroska",
     ];
     const fileName = file.name.toLowerCase();
     const fileExtension = fileName.substring(fileName.lastIndexOf("."));
-    const allowedExtensions = [".mp4", ".webm", ".mov", ".avi", ".mkv"];
+    const allowedExtensions = [".mp4", ".webm", ".mov", ".avi"];
+    const unsupportedExtensions = [".mkv"];
+
+    // Check for unsupported formats
+    if (
+      unsupportedExtensions.includes(fileExtension) ||
+      file.type === "video/x-matroska"
+    ) {
+      return {
+        valid: false,
+        error: `MKV files are not supported for web playback. Please convert to MP4, WebM, or MOV format first. You can use free tools like HandBrake or VLC to convert your video.`,
+      };
+    }
 
     if (
       !allowedTypes.includes(file.type) &&
@@ -116,7 +129,7 @@ const BasicInfoStep = () => {
     ) {
       return {
         valid: false,
-        error: `Invalid file type. Allowed: MP4, WebM, MOV, AVI, MKV`,
+        error: `Invalid file type. Supported formats: MP4, WebM, MOV, AVI`,
       };
     }
 
@@ -303,7 +316,7 @@ const BasicInfoStep = () => {
             {!isVideoUploading && (
               <input
                 type="file"
-                accept="video/mp4,video/webm,video/quicktime,video/x-msvideo,video/avi,video/x-matroska,.mkv"
+                accept="video/mp4,video/webm,video/quicktime,video/x-msvideo,video/avi,.mp4,.webm,.mov,.avi"
                 onChange={handleFileInputChange}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
@@ -398,7 +411,10 @@ const BasicInfoStep = () => {
                       </span>
                     </p>
                     <p className="text-xs text-gray-500">
-                      Max file size: 500MB • Supports: MP4, WebM, MOV, AVI, MKV
+                      Max file size: 500MB • Supports: MP4, WebM, MOV, AVI
+                    </p>
+                    <p className="text-xs text-amber-600">
+                      ⚠️ MKV files are not supported for web playback
                     </p>
                   </div>
                 </div>

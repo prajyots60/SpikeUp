@@ -330,7 +330,43 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 }
               }}
               onError={(e) => {
-                console.error("Video error:", e);
+                const video = e.currentTarget;
+                const error = video.error;
+
+                console.error("Video error details:", {
+                  error: error?.code,
+                  message: error?.message,
+                  videoSrc: video.src,
+                  networkState: video.networkState,
+                  readyState: video.readyState,
+                });
+
+                // Provide user-friendly error messages
+                if (error) {
+                  let errorMessage = "Video playback failed";
+
+                  switch (error.code) {
+                    case MediaError.MEDIA_ERR_ABORTED:
+                      errorMessage = "Video playback was aborted";
+                      break;
+                    case MediaError.MEDIA_ERR_NETWORK:
+                      errorMessage =
+                        "Network error occurred while loading video";
+                      break;
+                    case MediaError.MEDIA_ERR_DECODE:
+                      errorMessage =
+                        "Video format is not supported by your browser. Please try a different browser or contact support for a compatible format.";
+                      break;
+                    case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                      errorMessage =
+                        "Video format is not supported by your browser. Please try a different browser or contact support for a compatible format.";
+                      break;
+                    default:
+                      errorMessage = "An unknown video error occurred";
+                  }
+
+                  console.error("User-friendly error:", errorMessage);
+                }
               }}
             />
           )}

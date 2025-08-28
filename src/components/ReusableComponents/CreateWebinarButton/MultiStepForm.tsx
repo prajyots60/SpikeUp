@@ -92,7 +92,22 @@ const MultiStepForm = ({ steps, onComplete }: Props) => {
     if (isLastStep) {
       setSubmitting(true);
       try {
-        const result = await createWebinar(formData);
+        // Clean form data by removing File objects to prevent body size limit errors
+        const cleanedFormData = {
+          ...formData,
+          basicInfo: {
+            ...formData.basicInfo,
+            // Remove File objects - keep only URLs and keys
+            videoFile: undefined,
+            thumbnailFile: undefined,
+            // Remove XMLHttpRequest reference
+            uploadXhr: undefined,
+          }
+        };
+
+        console.log("Sending cleaned form data:", cleanedFormData);
+        
+        const result = await createWebinar(cleanedFormData);
         if (result.status === 200 && result.webinarId) {
           // SUCCESS: Don't clean up video - it's now part of the webinar
           toast.success("Your webinar has been created successfully!");
