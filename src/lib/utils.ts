@@ -23,8 +23,6 @@ export function formatInIST(
 // Convert a YYYY-MM-DD string to a Date object at midnight IST.
 // We build an ISO string with explicit +05:30 offset to avoid local/UTC drift.
 export function istDateFromYMD(ymd: string): Date {
-  // Validate simple pattern
-  // eslint-disable-next-line no-useless-escape
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(ymd);
   if (!m) return new Date(ymd);
   const iso = `${m[1]}-${m[2]}-${m[3]}T00:00:00+05:30`;

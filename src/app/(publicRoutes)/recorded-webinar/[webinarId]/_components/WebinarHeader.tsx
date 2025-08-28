@@ -16,9 +16,9 @@ const WebinarHeader: React.FC<WebinarHeaderProps> = ({ onShare }) => {
         url: window.location.href,
       });
     } catch (error) {
-      // Fallback to clipboard
       navigator.clipboard.writeText(window.location.href);
       toast.success("Link copied to clipboard!");
+      console.log("Error sharing:", error);
     }
 
     onShare?.();

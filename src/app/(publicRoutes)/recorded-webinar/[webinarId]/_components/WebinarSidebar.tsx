@@ -86,7 +86,7 @@ const WebinarSidebar: React.FC<WebinarSidebarProps> = ({ webinar }) => {
                 Ready to take action?
               </h3>
               <p className="text-purple-100 text-sm mb-4">
-                Don't let this opportunity slip away
+                Don&apos;t let this opportunity slip away
               </p>
               <Button
                 asChild

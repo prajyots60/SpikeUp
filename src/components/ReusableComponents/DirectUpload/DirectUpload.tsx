@@ -5,15 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import {
-  Upload,
-  X,
-  CheckCircle,
-  AlertCircle,
-  File,
-  Video,
-  Image,
-} from "lucide-react";
+import { X, CheckCircle, AlertCircle, File, Video, Image } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -121,7 +113,7 @@ const DirectUpload: React.FC<DirectUploadProps> = ({
         }
       });
 
-      xhr.addEventListener("error", (event) => {
+      xhr.addEventListener("error", () => {
         reject(new Error(`Network error during upload. Status: ${xhr.status}`));
       });
 

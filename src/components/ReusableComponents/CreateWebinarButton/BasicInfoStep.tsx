@@ -18,7 +18,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn, ymdInIST, formatISTDateLabel, istDateFromYMD } from "@/lib/utils";
 import { useWebinarStore } from "@/store/useWebinarStore";
-import { CalendarIcon, Clock, Upload, FileVideo } from "lucide-react";
+import { CalendarIcon, Clock, FileVideo } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
 import DirectUpload from "@/components/ReusableComponents/DirectUpload/DirectUpload";
@@ -35,7 +35,6 @@ const BasicInfoStep = () => {
     date,
     time,
     timeFormat,
-    videoFile,
     videoUrl,
     isPreRecorded,
   } = formData.basicInfo;
