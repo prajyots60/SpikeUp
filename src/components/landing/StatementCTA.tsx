@@ -58,7 +58,10 @@ export default function StatementCTA() {
       <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative p-10 sm:p-14 rounded-3xl border border-white/10 bg-gradient-to-b from-background/70 to-background/50 backdrop-blur supports-[backdrop-filter]:bg-background/45 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)]">
           {/* Sheen overlay on hover */}
-          <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl" style={maskStyle}>
+          <div
+            className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl"
+            style={maskStyle}
+          >
             <div className="absolute -left-1/2 top-0 h-full w-[200%] bg-gradient-to-r from-transparent via-white/5 to-transparent animate-sheen" />
           </div>
 

@@ -4,7 +4,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { ArrowRight, Play, Shield, Sparkles, Zap } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 export default function HeroShowcase() {
@@ -49,6 +55,11 @@ export default function HeroShowcase() {
                 className="sm:max-w-3xl p-0 overflow-hidden"
                 showCloseButton
               >
+                {/* Accessible title/description for screen readers */}
+                <DialogTitle className="sr-only">Watch demo</DialogTitle>
+                <DialogDescription className="sr-only">
+                  SpikeUp product demo video showcasing the webinar experience.
+                </DialogDescription>
                 <AspectRatio ratio={16 / 9}>
                   {open ? (
                     <iframe
