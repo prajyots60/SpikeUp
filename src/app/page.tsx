@@ -1,136 +1,42 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import {
   Triangle,
-  Sparkles,
   Users,
   Video,
   BarChart3,
   Bot,
-  CheckCircle,
-  ArrowRight,
-  Play,
   Calendar,
   MessageSquare,
   Star,
 } from "lucide-react";
+import AuroraBackground from "@/components/landing/AuroraBackground";
+import HeroShowcase from "@/components/landing/HeroShowcase";
+import BrandMarquee from "@/components/landing/BrandMarquee";
+import TopNav from "@/components/landing/TopNav";
+import HowItWorks from "@/components/landing/HowItWorks";
+import PricingTeaser from "@/components/landing/PricingTeaser";
+import StatementCTA from "@/components/landing/StatementCTA";
 
 export default async function RootPage() {
   const user = await currentUser();
 
-  // If user is signed in, redirect to home
-  if (user) {
-    redirect("/home");
-  }
+  if (user) redirect("/home");
 
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="border-b border-border/50 backdrop-blur-sm bg-background/95 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="iconBackground p-2 relative overflow-hidden group">
-                <Triangle className="w-6 h-6 fill-primary/20 stroke-2 group-hover:scale-110 transition-all duration-300" />
-                <div
-                  className="absolute inset-0 border-2 border-primary/30 rounded-full animate-spin opacity-20 group-hover:opacity-60 transition-opacity duration-300"
-                  style={{ animationDuration: "8s" }}
-                ></div>
-                <div className="absolute -top-0.5 left-1/2 w-0.5 h-2 bg-gradient-to-t from-primary/60 to-transparent transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </div>
-              <span className="text-xl font-bold">SpikeUp</span>
-            </div>
+      <TopNav />
 
-            <div className="hidden md:flex items-center space-x-8">
-              <a
-                href="#features"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Features
-              </a>
-              <a
-                href="#pricing"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Pricing
-              </a>
-              <a
-                href="#testimonials"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Testimonials
-              </a>
-            </div>
-
-            {/* Auth Buttons */}
-            <div className="flex items-center gap-4">
-              <Link
-                href="/sign-in"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/sign-up"
-                className="bg-gradient-to-r from-accent-primary to-accent-secondary hover:from-accent-primary/90 hover:to-accent-secondary/90 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300"
-              >
-                Get Started
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-accent/5">
-        <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-accent-primary/10 to-accent-secondary/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-accent-secondary/10 to-accent-primary/10 rounded-full blur-3xl"></div>
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
-          <div className="text-center space-y-8">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-card/50 border border-border/50 rounded-full px-4 py-2 backdrop-blur-sm">
-              <Sparkles className="w-4 h-4 text-accent-primary" />
-              <span className="text-sm font-medium">
-                AI-Powered Webinar Platform
-              </span>
-            </div>
-
-            {/* Main Headline */}
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
-              Transform Your Webinars with{" "}
-              <span className="bg-gradient-to-r from-accent-primary via-accent-secondary to-accent-primary bg-clip-text text-transparent animate-pulse">
-                AI Intelligence
-              </span>
-            </h1>
-
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Create, manage, and optimize high-converting webinars with
-              intelligent automation. Join thousands of businesses scaling their
-              revenue with SpikeUp.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
-              <Link
-                href="/sign-up"
-                className="group bg-gradient-to-r from-accent-primary to-accent-secondary hover:from-accent-primary/90 hover:to-accent-secondary/90 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2"
-              >
-                Start Free Trial
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <button className="group bg-card/50 border border-border hover:bg-accent text-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center gap-2 backdrop-blur-sm">
-                <Play className="w-5 h-5" />
-                Watch Demo
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Advanced Hero */}
+      <section className="relative overflow-hidden">
+        <AuroraBackground />
+        <HeroShowcase />
       </section>
 
-      <section className="py-20 bg-card/30">
+      <BrandMarquee />
+
+      <section className="py-20 bg-card/30" id="stats">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div className="space-y-2">
@@ -165,7 +71,7 @@ export default async function RootPage() {
               </span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Powerful features designed to maximize engagement and conversions
+              Precision-built for engagement, data, and outcomes—without noise
             </p>
           </div>
 
@@ -173,47 +79,65 @@ export default async function RootPage() {
             {[
               {
                 icon: Bot,
-                title: "AI Assistant Integration",
+                title: "AI Co-Host",
                 description:
-                  "Intelligent automation that handles Q&A, lead qualification, and follow-ups automatically.",
+                  "Real-time Q&A, intent detection, and lead qualification—human when needed, autonomous at scale.",
               },
               {
                 icon: BarChart3,
-                title: "Advanced Analytics",
+                title: "Behavioral Analytics",
                 description:
-                  "Deep insights into attendee behavior, engagement metrics, and conversion optimization.",
+                  "See where attention peaks and drops, map sentiment, and optimize flows with clarity.",
               },
               {
                 icon: Users,
-                title: "Unlimited Attendees",
+                title: "Elastic Capacity",
                 description:
-                  "Scale your webinars to thousands of participants without compromising quality.",
+                  "Go from 10 to tens of thousands—latency-aware infra scales with you automatically.",
               },
               {
                 icon: Video,
-                title: "HD Streaming",
+                title: "Studio-Grade Video",
                 description:
-                  "Crystal clear video quality with adaptive bitrate streaming for any device.",
+                  "Crisp, adaptive streaming with instant recovery and device-aware tuning.",
               },
               {
                 icon: MessageSquare,
-                title: "Interactive Chat",
+                title: "Interactive Layers",
                 description:
-                  "Real-time chat, polls, Q&A sessions, and breakout rooms for maximum engagement.",
+                  "Chat, polls, and breakout rooms with programmable prompts and actions.",
               },
               {
                 icon: Calendar,
                 title: "Smart Scheduling",
                 description:
-                  "Automated reminders, timezone detection, and calendar integrations.",
+                  "Timezone-aware invites, multi-touch reminders, and calendar integrations.",
               },
             ].map((feature, index) => (
               <div
                 key={index}
-                className="group p-6 rounded-2xl bg-card/50 border border-border/50 hover:border-accent-primary/50 transition-all duration-300 hover:shadow-lg"
+                className="group p-6 rounded-2xl bg-card/50 border border-border/50 hover:border-accent-primary/50 transition-all duration-300 hover:shadow-lg anim-reveal"
               >
-                <div className="iconBackground p-3 mb-4 w-fit">
-                  <feature.icon className="w-6 h-6" />
+                <div className="mb-4">
+                  <div className="relative w-12 h-12 p-[1.5px] rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary shadow-[0_0_0_1px_theme(colors.accent-primary/.2),0_10px_25px_-10px_theme(colors.accent-primary/.4)]">
+                    <div className="w-full h-full rounded-[10px] bg-background/70 backdrop-blur flex items-center justify-center">
+                      <feature.icon className="w-6 h-6 text-accent-primary" />
+                    </div>
+                    <span
+                      className="pointer-events-none absolute -top-0.5 -left-0.5 size-1.5 rounded-full"
+                      style={{
+                        background:
+                          "radial-gradient(circle, var(--accent-primary), transparent 60%)",
+                      }}
+                    />
+                    <span
+                      className="pointer-events-none absolute -bottom-0.5 -right-0.5 size-1.5 rounded-full"
+                      style={{
+                        background:
+                          "radial-gradient(circle, var(--accent-secondary), transparent 60%)",
+                      }}
+                    />
+                  </div>
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
                 <p className="text-muted-foreground">{feature.description}</p>
@@ -222,6 +146,8 @@ export default async function RootPage() {
           </div>
         </div>
       </section>
+
+      <HowItWorks />
 
       <section id="testimonials" className="py-20 bg-card/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -260,16 +186,16 @@ export default async function RootPage() {
                 role: "Sales Manager",
                 company: "ScaleUp Inc",
                 content:
-                  "Best webinar platform we&apos;ve used. The AI assistant handles lead qualification perfectly, and our sales team loves it.",
+                  "Best webinar platform we've used. The AI assistant handles lead qualification perfectly, and our sales team loves it.",
                 rating: 5,
               },
-            ].map((testimonial, index) => (
+            ].map((t, index) => (
               <div
                 key={index}
                 className="p-6 rounded-2xl bg-background border border-border"
               >
                 <div className="flex items-center gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
+                  {[...Array(t.rating)].map((_, i) => (
                     <Star
                       key={i}
                       className="w-4 h-4 fill-yellow-400 text-yellow-400"
@@ -277,21 +203,21 @@ export default async function RootPage() {
                   ))}
                 </div>
                 <p className="text-muted-foreground mb-4 italic">
-                  &quot;{testimonial.content}&quot;
+                  &quot;{t.content}&quot;
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-accent-primary/20 flex items-center justify-center">
                     <span className="text-sm font-semibold">
-                      {testimonial.name
+                      {t.name
                         .split(" ")
                         .map((n) => n[0])
                         .join("")}
                     </span>
                   </div>
                   <div>
-                    <div className="font-semibold">{testimonial.name}</div>
+                    <div className="font-semibold">{t.name}</div>
                     <div className="text-sm text-muted-foreground">
-                      {testimonial.role} at {testimonial.company}
+                      {t.role} at {t.company}
                     </div>
                   </div>
                 </div>
@@ -301,32 +227,9 @@ export default async function RootPage() {
         </div>
       </section>
 
-      <section className="py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="p-12 rounded-3xl bg-gradient-to-r from-accent-primary/10 via-accent-secondary/10 to-accent-primary/10 border border-accent-primary/20">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Ready to revolutionize your webinars?
-            </h2>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Join thousands of businesses using SpikeUp to create engaging,
-              high-converting webinars with AI automation.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link
-                href="/sign-up"
-                className="group bg-gradient-to-r from-accent-primary to-accent-secondary hover:from-accent-primary/90 hover:to-accent-secondary/90 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2"
-              >
-                Start Your Free Trial
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span>No credit card required</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <PricingTeaser />
+
+      <StatementCTA />
 
       <footer className="border-t border-border/50 py-12 bg-card/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
