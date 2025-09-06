@@ -24,7 +24,6 @@ export default async function RootPage() {
     redirect("/home");
   }
 
-  // If not signed in, show landing page
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
@@ -44,7 +43,6 @@ export default async function RootPage() {
               <span className="text-xl font-bold">SpikeUp</span>
             </div>
 
-            {/* Navigation Links */}
             <div className="hidden md:flex items-center space-x-8">
               <a
                 href="#features"
@@ -85,7 +83,6 @@ export default async function RootPage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-accent/5">
         <div className="absolute inset-0">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-accent-primary/10 to-accent-secondary/10 rounded-full blur-3xl"></div>
@@ -110,14 +107,12 @@ export default async function RootPage() {
               </span>
             </h1>
 
-            {/* Subheading */}
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Create, manage, and optimize high-converting webinars with
               intelligent automation. Join thousands of businesses scaling their
               revenue with SpikeUp.
             </p>
 
-            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
               <Link
                 href="/sign-up"
@@ -131,32 +126,10 @@ export default async function RootPage() {
                 Watch Demo
               </button>
             </div>
-
-            {/* Social Proof */}
-            <div className="pt-16">
-              <p className="text-sm text-muted-foreground mb-6">
-                Trusted by leading companies worldwide
-              </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 opacity-50">
-                <div className="flex items-center justify-center h-12 bg-card/30 rounded-lg">
-                  <span className="font-semibold">Microsoft</span>
-                </div>
-                <div className="flex items-center justify-center h-12 bg-card/30 rounded-lg">
-                  <span className="font-semibold">Salesforce</span>
-                </div>
-                <div className="flex items-center justify-center h-12 bg-card/30 rounded-lg">
-                  <span className="font-semibold">HubSpot</span>
-                </div>
-                <div className="flex items-center justify-center h-12 bg-card/30 rounded-lg">
-                  <span className="font-semibold">Stripe</span>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
       <section className="py-20 bg-card/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
@@ -182,7 +155,6 @@ export default async function RootPage() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section id="features" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -251,7 +223,6 @@ export default async function RootPage() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
       <section id="testimonials" className="py-20 bg-card/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -269,7 +240,7 @@ export default async function RootPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                name: "Sarah Johnson",
+                name: "Shubham Shinde",
                 role: "Marketing Director",
                 company: "TechCorp",
                 content:
@@ -330,7 +301,6 @@ export default async function RootPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="p-12 rounded-3xl bg-gradient-to-r from-accent-primary/10 via-accent-secondary/10 to-accent-primary/10 border border-accent-primary/20">
@@ -358,7 +328,6 @@ export default async function RootPage() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="border-t border-border/50 py-12 bg-card/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">

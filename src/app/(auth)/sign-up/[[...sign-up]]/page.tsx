@@ -12,15 +12,17 @@ const Signup = () => {
         <div className="hidden lg:flex flex-col justify-center space-y-8 px-8">
           {/* Logo Section */}
           <div className="flex items-center gap-4">
-            <div className="iconBackground p-4 relative overflow-hidden group">
-              <Triangle className="w-8 h-8 fill-primary/20 stroke-2 group-hover:scale-110 transition-all duration-300" />
-              <div
-                className="absolute inset-0 border-2 border-primary/30 rounded-full animate-spin opacity-20 group-hover:opacity-60 transition-opacity duration-300"
-                style={{ animationDuration: "8s" }}
-              ></div>
-              <div className="absolute inset-2 bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 animate-pulse"></div>
-              <div className="absolute -top-1 left-1/2 w-0.5 h-3 bg-gradient-to-t from-primary/60 to-transparent transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </div>
+            <Link href="/">
+              <div className="iconBackground p-4 relative overflow-hidden group">
+                <Triangle className="w-8 h-8 fill-primary/20 stroke-2 group-hover:scale-110 transition-all duration-300" />
+                <div
+                  className="absolute inset-0 border-2 border-primary/30 rounded-full animate-spin opacity-20 group-hover:opacity-60 transition-opacity duration-300"
+                  style={{ animationDuration: "8s" }}
+                ></div>
+                <div className="absolute inset-2 bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 animate-pulse"></div>
+                <div className="absolute -top-1 left-1/2 w-0.5 h-3 bg-gradient-to-t from-primary/60 to-transparent transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </div>
+            </Link>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
                 SpikeUp
