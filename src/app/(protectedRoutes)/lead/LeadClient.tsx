@@ -1,13 +1,7 @@
 "use client";
 
 import type { LeadItem } from "@/actions/leads";
-import {
-  startTransition,
-  useEffect,
-  useMemo,
-  useState,
-  useTransition,
-} from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -209,7 +203,7 @@ export default function LeadClient({
             const items: number[] = [];
             const maxButtons = 7;
             let start = Math.max(1, initialPage - 3);
-            let end = Math.min(totalPages, start + maxButtons - 1);
+            const end = Math.min(totalPages, start + maxButtons - 1);
             start = Math.max(1, end - maxButtons + 1);
             for (let i = start; i <= end; i++) items.push(i);
             return items;

@@ -15,7 +15,7 @@ export default async function Page(props: { searchParams: SearchParams }) {
     (searchParams?.["includeConverted"] as string) === "true";
   const q = (searchParams?.["q"] as string) || "";
   const page = Number(searchParams?.["page"] || 1) || 1;
-  const pageSize = Number(searchParams?.["pageSize"] || 20) || 20;
+  const pageSize = Number(searchParams?.["pageSize"] || 50) || 50;
 
   const res = await getLeadsForCurrentUser({
     category,

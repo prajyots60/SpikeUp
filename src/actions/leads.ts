@@ -58,7 +58,7 @@ export async function getLeadsForCurrentUser(options?: {
   const effectiveExcludeConverted = includeConverted
     ? false
     : options?.excludeConverted ?? true;
-  const pageSize = Math.max(1, Math.min(100, options?.pageSize ?? 20));
+  const pageSize = Math.max(1, Math.min(100, options?.pageSize ?? 50));
   const page = Math.max(1, options?.page ?? 1);
   const query = (options?.query || "").trim().toLowerCase();
   try {
@@ -81,7 +81,7 @@ export async function getLeadsForCurrentUser(options?: {
     });
 
     if (webinars.length === 0) {
-      const pageSize = Math.max(1, Math.min(100, options?.pageSize ?? 20));
+      const pageSize = Math.max(1, Math.min(100, options?.pageSize ?? 50));
       const page = Math.max(1, options?.page ?? 1);
       return {
         success: true,

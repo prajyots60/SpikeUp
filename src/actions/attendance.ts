@@ -113,6 +113,7 @@ export const getWebinarAttendance = async (
               id: attendance.user.id,
               name: attendance.user.name,
               email: attendance.user.email,
+              phone: (attendance.user as any).phone || "",
               attendedAt: attendance.joinedAt,
               createdAt: attendance.user.createdAt,
               updatedAt: attendance.user.updatedAt,
@@ -145,10 +146,12 @@ export const registerAttendee = async ({
   webinarId,
   email,
   name,
+  phone,
 }: {
   webinarId: string;
   email: string;
   name: string;
+  phone?: string;
 }) => {
   try {
     if (!webinarId || !email || !name) {
@@ -181,11 +184,36 @@ export const registerAttendee = async ({
           name,
         },
       });
+      if (phone) {
+        attendee = (await prismaClient.attendee.update({
+          where: { id: attendee.id },
+          data: { phone } as any,
+        })) as any;
+      }
+    }
+    // If attendee exists and provided phone is non-empty while stored is empty, update
+    else if (
+      phone &&
+      (!(attendee as any).phone ||
+        ((attendee as any).phone as string).trim() === "")
+    ) {
+      attendee = (await prismaClient.attendee.update({
+        where: { id: attendee.id },
+        data: { phone } as any,
+      })) as any;
+    }
+
+    if (!attendee) {
+      return {
+        error: "Failed to prepare attendee",
+        status: 500,
+        success: false,
+      };
     }
 
     const existingAttendance = await prismaClient.attendance.findFirst({
       where: {
-        attendeeId: attendee.id,
+        attendeeId: attendee.id!,
         webinarId,
       },
       include: {
@@ -205,7 +233,7 @@ export const registerAttendee = async ({
     const attendance = await prismaClient.attendance.create({
       data: {
         attendedType: AttendedTypeEnum.REGISTERED,
-        attendeeId: attendee.id,
+        attendeeId: attendee.id!,
         webinarId,
       },
       include: {

@@ -32,6 +32,7 @@ const WaitListComponent = ({
   const [submitted, setSubmitted] = useState(false);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
 
   const { setAttendee } = useAttendeeStore();
 
@@ -54,7 +55,7 @@ const WaitListComponent = ({
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await registerAttendee({ email, name, webinarId });
+      const res = await registerAttendee({ email, name, phone, webinarId });
 
       if (!res.success) {
         throw new Error(res.error || "Failed to register");
@@ -65,6 +66,7 @@ const WaitListComponent = ({
           id: res.data.user.id,
           name: res.data.user.name,
           email: res.data.user.email,
+          phone: res.data.user.phone,
           callStatus: "PENDING",
           createdAt: res.data.user.createdAt,
           updatedAt: res.data.user.updatedAt,
@@ -79,6 +81,7 @@ const WaitListComponent = ({
 
       setEmail("");
       setName("");
+      setPhone("");
       setSubmitted(true);
 
       setTimeout(() => {
@@ -134,6 +137,15 @@ const WaitListComponent = ({
                   placeholder="Your Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  required
+                />
+                <Input
+                  type="tel"
+                  placeholder="Your Phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  pattern="[+()\-\s0-9]{7,}"
+                  title="Enter a valid phone number"
                   required
                 />
                 <Input
