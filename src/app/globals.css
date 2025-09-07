@@ -160,6 +160,41 @@
     animation-delay: 0.3s;
   }
 
+  /* Skeleton shimmer */
+  @keyframes skeleton-shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background-image: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.06) 25%,
+      rgba(255, 255, 255, 0.14) 37%,
+      rgba(255, 255, 255, 0.06) 63%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-shimmer 1.6s ease-in-out infinite;
+  }
+
+  /* Progress bar animation */
+  @keyframes progress-run {
+    0% {
+      width: 0%;
+    }
+    100% {
+      width: 100%;
+    }
+  }
+  .animate-progress {
+    animation: progress-run 6s linear infinite;
+  }
+
   /* Floating animation keyframes */
   @keyframes float {
     0%,
@@ -173,6 +208,35 @@
 
   .animate-float {
     animation: float 3s ease-in-out infinite;
+  }
+
+  /* Chat bubble entrance */
+  @keyframes chat-in {
+    from {
+      opacity: 0;
+      transform: translateX(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  .animate-chat-in {
+    animation: chat-in 500ms ease-out both;
+  }
+
+  /* Blink (for LIVE dot) */
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+  .animate-blink {
+    animation: blink 1.2s ease-in-out infinite;
   }
 
   /* Orbit rotation & node pulse */
@@ -282,12 +346,19 @@
   @media (prefers-reduced-motion: reduce) {
     .anim-reveal,
     .animate-float,
+    .animate-sheen,
+    .animate-chat-in,
+    .animate-blink,
     .iconBackground .animate-spin,
     [style*="orbit-rotate"],
     [style*="node-pulse"],
     [class*="marquee"] {
       animation: none !important;
       transition: none !important;
+    }
+    .skeleton,
+    .animate-progress {
+      animation: none !important;
     }
   }
 }
