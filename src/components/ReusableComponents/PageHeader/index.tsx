@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import PurpleIcon from "../PurpleIcon";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -10,6 +12,9 @@ type Props = {
   rightIcon?: React.ReactNode;
   placeholder?: string;
   children?: React.ReactNode;
+  onSearchChange?: (value: string) => void;
+  defaultSearchValue?: string;
+  debounceMs?: number;
 };
 
 const PageHeader = ({
@@ -19,7 +24,30 @@ const PageHeader = ({
   rightIcon,
   placeholder,
   children,
+  onSearchChange,
+  defaultSearchValue,
+  debounceMs = 400,
 }: Props) => {
+  const [value, setValue] = useState<string>(defaultSearchValue || "");
+  const lastEmitted = useRef<string>(defaultSearchValue || "");
+
+  useEffect(() => {
+    // Sync from external default and mark as already emitted to avoid loops
+    const next = defaultSearchValue || "";
+    lastEmitted.current = next;
+    setValue(next);
+  }, [defaultSearchValue]);
+
+  useEffect(() => {
+    if (!onSearchChange) return;
+    // Only emit when user input changes the value from the last emitted value
+    if (value === lastEmitted.current) return;
+    const id = setTimeout(() => {
+      lastEmitted.current = value;
+      onSearchChange(value);
+    }, Math.max(0, debounceMs));
+    return () => clearTimeout(id);
+  }, [value, onSearchChange, debounceMs]);
   return (
     <div className="w-full flex flex-col gap-8">
       <div className="w-full flex justify-center sm:justify-between items-center gap-8 flex-wrap">
@@ -49,6 +77,8 @@ const PageHeader = ({
             type="text"
             placeholder={placeholder || "Search options..."}
             className="pl-10 rounded-md w-full"
+            value={value}
+            onChange={(e) => setValue(e.currentTarget.value)}
           />
         </div>
         <div className="w-full md:w-1/2 overflow-x-auto">{children}</div>
