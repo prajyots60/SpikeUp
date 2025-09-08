@@ -5,7 +5,7 @@ import { OnAuthenticateUser } from "./auth";
 import { prismaClient } from "@/lib/prismaClient";
 import { combineISTDateTimeToUTC } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
-import { WebinarStatusEnum } from "@prisma/client";
+import { WebinarStatusEnum, type Prisma } from "@prisma/client";
 
 // Deprecated in favor of combineISTDateTimeToUTC in utils
 
@@ -100,23 +100,26 @@ export const getWebinarsByPresenterId = async (
   webinarStatus?: string
 ) => {
   try {
-    let statusFilter: WebinarStatusEnum | undefined;
+    const where: Prisma.WebinarWhereInput = { presenterId };
 
     switch (webinarStatus) {
       case "upcoming":
-        statusFilter = WebinarStatusEnum.SCHEDULED;
+        where.webinarStatus = {
+          in: [WebinarStatusEnum.SCHEDULED, WebinarStatusEnum.WAITING_ROOM],
+        };
         break;
       case "live":
-        statusFilter = WebinarStatusEnum.LIVE;
+        where.webinarStatus = WebinarStatusEnum.LIVE;
         break;
       case "ended":
-        statusFilter = WebinarStatusEnum.ENDED;
+        where.webinarStatus = WebinarStatusEnum.ENDED;
         break;
       default:
-        statusFilter = undefined; // No filter
+      // leave unfiltered
     }
+
     const webinars = await prismaClient.webinar.findMany({
-      where: { presenterId, webinarStatus: statusFilter },
+      where,
       include: {
         presenter: {
           select: {
