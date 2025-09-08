@@ -72,7 +72,20 @@ const WebinarUpcomingState = ({ webinar, currentUser }: Props) => {
         </div>
 
         {webinar?.webinarStatus === "SCHEDULED" ? (
-          <WaitListComponent webinarId={webinar.id} webinarStatus="SCHEDULED" />
+          currentUser?.id === webinar?.presenterId ? (
+            <Button
+              className="w-full max-w-[300px] font-semibold"
+              disabled
+              title="Start will be enabled when the waiting room opens"
+            >
+              Start Webinar
+            </Button>
+          ) : (
+            <WaitListComponent
+              webinarId={webinar.id}
+              webinarStatus="SCHEDULED"
+            />
+          )
         ) : webinar?.webinarStatus === "WAITING_ROOM" ? (
           <>
             {currentUser?.id === webinar?.presenterId ? (
