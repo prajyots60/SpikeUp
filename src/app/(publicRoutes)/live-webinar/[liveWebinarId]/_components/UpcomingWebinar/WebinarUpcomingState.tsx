@@ -9,7 +9,7 @@ import { Calendar, Clock, Loader2 } from "lucide-react";
 import { changeWebinarStatus } from "@/actions/webinar";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { formatISTDateLabel, formatISTTimeLabel } from "@/lib/utils";
+import { formatISTDateLabel, formatISTTimeLabel, parseUTC } from "@/lib/utils";
 import { createAndStartStream } from "@/actions/streamIo";
 
 type Props = {
@@ -54,7 +54,7 @@ const WebinarUpcomingState = ({ webinar, currentUser }: Props) => {
         </p>
 
         <CountdownTimer
-          targetDate={new Date(webinar.startTime)}
+          targetDate={parseUTC(webinar.startTime)}
           className="text-center"
           webinarId={webinar.id}
           webinarStatus={webinar.webinarStatus}

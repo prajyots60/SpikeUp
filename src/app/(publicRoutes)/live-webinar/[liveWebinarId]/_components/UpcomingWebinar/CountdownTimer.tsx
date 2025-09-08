@@ -70,11 +70,20 @@ const CountdownTimer = ({
         };
       }
 
+      const dayMs = 1000 * 60 * 60 * 24;
+      const hourMs = 1000 * 60 * 60;
+      const minuteMs = 1000 * 60;
+
+      const days = Math.floor(difference / dayMs);
+      const hours = Math.floor((difference % dayMs) / hourMs);
+      const minutes = Math.floor((difference % hourMs) / minuteMs);
+      const seconds = Math.floor((difference % minuteMs) / 1000);
+
       return {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60 * 24)) % 24),
-        minutes: Math.floor((difference / (1000 * 60)) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
+        days,
+        hours,
+        minutes,
+        seconds,
         milliseconds: difference % 1000,
       };
     };

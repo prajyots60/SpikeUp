@@ -80,3 +80,19 @@ export function formatISTTimeLabel(date: Date | string): string {
     hour12: true,
   });
 }
+
+// Parse a Date that is intended to be in UTC even if the incoming string
+// does not include a timezone suffix (e.g., "YYYY-MM-DD HH:mm:ss").
+// If a timezone is present (like trailing 'Z' or +05:30), it is respected.
+export function parseUTC(date: Date | string): Date {
+  if (date instanceof Date) return date;
+  const raw = (date || "").toString().trim();
+  if (!raw) return new Date(NaN);
+  // If it already has timezone info ('Z' or ±HH:MM), parse directly
+  if (/[zZ]$|[+-]\d{2}:?\d{2}$/.test(raw)) {
+    return new Date(raw);
+  }
+  // Normalize space to 'T' and append 'Z' to mark as UTC
+  const normalized = raw.includes("T") ? raw : raw.replace(" ", "T");
+  return new Date(`${normalized}Z`);
+}
