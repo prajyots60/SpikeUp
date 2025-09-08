@@ -97,7 +97,8 @@ export const createWebinar = async (formData: WebinarFormState) => {
 
 export const getWebinarsByPresenterId = async (
   presenterId: string,
-  webinarStatus?: string
+  webinarStatus?: string,
+  search?: string
 ) => {
   try {
     const where: Prisma.WebinarWhereInput = { presenterId };
@@ -118,8 +119,13 @@ export const getWebinarsByPresenterId = async (
       // leave unfiltered
     }
 
+    if (search && search.trim()) {
+      where.title = { contains: search.trim(), mode: "insensitive" };
+    }
+
     const webinars = await prismaClient.webinar.findMany({
       where,
+      orderBy: { createdAt: "desc" },
       include: {
         presenter: {
           select: {

@@ -1,6 +1,6 @@
 import { OnAuthenticateUser } from "@/actions/auth";
 import { getWebinarsByPresenterId } from "@/actions/webinar";
-import PageHeader from "@/components/ReusableComponents/PageHeader";
+import WebinarsHeaderClient from "./WebinarsHeaderClient";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Webinar, WebinarStatusEnum } from "@prisma/client";
 import { HomeIcon, Users2, Webcam } from "lucide-react";
@@ -11,59 +11,28 @@ import Link from "next/link";
 
 type Props = {
   searchParams: Promise<{
-    webinarStatus: string;
+    webinarStatus?: string;
+    q?: string;
   }>;
 };
 
 const Page = async ({ searchParams }: Props) => {
-  const { webinarStatus } = await searchParams;
+  const { webinarStatus, q } = await searchParams;
   const checkUser = await OnAuthenticateUser();
   if (!checkUser || !checkUser.isAuthenticated || !checkUser.user) {
     redirect("/sign-in");
   }
   const webinars = await getWebinarsByPresenterId(
     checkUser.user.id,
-    webinarStatus as WebinarStatusEnum
+    (webinarStatus as WebinarStatusEnum) || "all",
+    q || ""
   );
   return (
     <Tabs
       value={webinarStatus || "all"}
       className="w-full flex flex-col  gap-8"
     >
-      <PageHeader
-        leftIcon={<HomeIcon className="w-3 h-3" />}
-        mainIcon={<Webcam className="w-8 h-8" />}
-        rightIcon={<Users2 className="w-3 h-3" />}
-        heading="The home to all your webinars"
-        placeholder="Search options..."
-      >
-        <TabsList className="bg-transparent space-x-3">
-          <TabsTrigger
-            value="all"
-            className="bg-secondary opacity-70 data-[state=active]:opacity-100 px-8 py-4"
-          >
-            <Link href="/webinars?webinarStatus=all">All</Link>
-          </TabsTrigger>
-          <TabsTrigger
-            value="upcoming"
-            className="bg-secondary opacity-70 data-[state=active]:opacity-100 px-8 py-4"
-          >
-            <Link href="/webinars?webinarStatus=upcoming">Upcoming</Link>
-          </TabsTrigger>
-          <TabsTrigger
-            value="ended"
-            className="bg-secondary opacity-70 data-[state=active]:opacity-100 px-8 py-4"
-          >
-            <Link href="/webinars?webinarStatus=ended">Ended</Link>
-          </TabsTrigger>
-          <TabsTrigger
-            value="live"
-            className="bg-secondary opacity-70 data-[state=active]:opacity-100 px-8 py-4"
-          >
-            <Link href="/webinars?webinarStatus=live">Live</Link>
-          </TabsTrigger>
-        </TabsList>
-      </PageHeader>
+      <WebinarsHeaderClient />
 
       <TabsContent
         value="all"
