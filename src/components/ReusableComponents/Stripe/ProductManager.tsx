@@ -1,16 +1,29 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 import {
   createStripeProduct,
-  getAllProductsFromStripe,
   getAllProductsFromStripeSettings,
+  toggleStripeProductActive,
+  deleteStripeProduct,
 } from "@/actions/stripe";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2, Plus, RefreshCw } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 interface StripePrice {
   id: string;
@@ -35,6 +48,7 @@ const ProductManager: React.FC = () => {
   const [price, setPrice] = useState("");
   const [currency, setCurrency] = useState("USD");
   const [description, setDescription] = useState("");
+  const [actingId, setActingId] = useState<string | null>(null);
 
   const fetchProducts = async () => {
     try {
@@ -82,6 +96,61 @@ const ProductManager: React.FC = () => {
       toast.error("Unexpected error creating product");
     } finally {
       setCreating(false);
+    }
+  };
+
+  const handleToggleProduct = async (
+    productId: string,
+    currentActive: boolean
+  ) => {
+    try {
+      setActingId(productId);
+      const res = await toggleStripeProductActive(productId, !currentActive);
+      if (res.success) {
+        toast.success(`Product ${currentActive ? "deactivated" : "activated"}`);
+        await fetchProducts();
+      } else {
+        toast.error(res.error || "Action failed");
+      }
+    } catch (e) {
+      toast.error("Unexpected error updating product");
+    } finally {
+      setActingId(null);
+    }
+  };
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+
+  const requestDelete = (productId: string) => {
+    setPendingDeleteId(productId);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDeleteId) return;
+    const productId = pendingDeleteId;
+    try {
+      setActingId(productId);
+      const res = await deleteStripeProduct(productId);
+      if (res.success) {
+        if (res.deleted) {
+          toast.success("Product deleted");
+        } else if (res.archived) {
+          toast.success(res.message || "Product archived");
+        } else {
+          toast.success("Operation completed");
+        }
+        await fetchProducts();
+      } else {
+        toast.error(res.error || "Delete failed");
+      }
+    } catch (e) {
+      toast.error("Unexpected error deleting product");
+    } finally {
+      setActingId(null);
+      setDeleteDialogOpen(false);
+      setPendingDeleteId(null);
     }
   };
 
@@ -170,7 +239,20 @@ const ProductManager: React.FC = () => {
                 <h4 className="font-medium text-sm truncate" title={p.name}>
                   {p.name}
                 </h4>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-muted">
+                <span
+                  className={cn(
+                    "text-[10px] px-2 py-0.5 rounded font-medium tracking-wide inline-flex items-center gap-1 border",
+                    p.active
+                      ? "bg-green-500/10 text-green-500 border-green-500/30"
+                      : "bg-red-500/10 text-red-500 border-red-500/30"
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "w-1.5 h-1.5 rounded-full",
+                      p.active ? "bg-green-500" : "bg-red-500"
+                    )}
+                  />
                   {p.active ? "ACTIVE" : "INACTIVE"}
                 </span>
               </div>
@@ -194,11 +276,80 @@ const ProductManager: React.FC = () => {
                     Price: {defaultPrice.id}
                   </code>
                 )}
+                <div className="flex gap-2 mt-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={actingId === p.id}
+                    onClick={() => handleToggleProduct(p.id, p.active)}
+                    className="h-7 px-2 text-[11px]"
+                  >
+                    {actingId === p.id && (
+                      <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                    )}
+                    {p.active ? "Deactivate" : "Activate"}
+                  </Button>
+                  <AlertDialog
+                    open={deleteDialogOpen && pendingDeleteId === p.id}
+                    onOpenChange={(open) => {
+                      if (!open) {
+                        setDeleteDialogOpen(false);
+                        setPendingDeleteId(null);
+                      }
+                    }}
+                  >
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="destructive"
+                        disabled={actingId === p.id}
+                        onClick={() => requestDelete(p.id)}
+                        className="h-7 px-2 text-[11px]"
+                      >
+                        {actingId === p.id && (
+                          <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                        )}
+                        Delete
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete product?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action is irreversible. If the product cannot be
+                          fully deleted it will be archived instead.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel disabled={actingId === p.id}>
+                          Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          disabled={actingId === p.id}
+                          onClick={confirmDelete}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          {actingId === p.id ? (
+                            <span className="flex items-center gap-2">
+                              <Loader2 className="h-3 w-3 animate-spin" />{" "}
+                              Deleting...
+                            </span>
+                          ) : (
+                            "Confirm"
+                          )}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </div>
             </Card>
           );
         })}
       </div>
+      {/* Global delete dialog for accessibility fallback (hidden trigger) */}
     </div>
   );
 };

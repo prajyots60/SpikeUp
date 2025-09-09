@@ -27,9 +27,12 @@ export const getAllProductsFromStripe = async () => {
       };
     }
 
-    const products = await stripe.products.list({
-      stripeAccount: currentUser.user.stripeConnectId,
-    });
+    const products = await stripe.products.list(
+      { active: true },
+      {
+        stripeAccount: currentUser.user.stripeConnectId,
+      }
+    );
 
     return {
       products: products,
@@ -184,6 +187,154 @@ export const createStripeProduct = async (
       success: false,
       status: 500,
       error: "Failed to create product",
+    };
+  }
+};
+
+// Toggle product active (archive / unarchive)
+export const toggleStripeProductActive = async (
+  productId: string,
+  makeActive: boolean
+) => {
+  try {
+    const currentUser = await OnAuthenticateUser();
+    if (!currentUser.user) {
+      return { success: false, status: 401, error: "User not authenticated" };
+    }
+    if (!currentUser.user.stripeConnectId) {
+      return {
+        success: false,
+        status: 403,
+        error: "User does not have a connected Stripe account",
+      };
+    }
+    if (!productId) {
+      return { success: false, status: 400, error: "Product ID required" };
+    }
+    const stripeAccount = currentUser.user.stripeConnectId;
+    const updated = await stripe.products.update(
+      productId,
+      { active: makeActive },
+      { stripeAccount }
+    );
+    return {
+      success: true,
+      status: 200,
+      product: {
+        id: updated.id,
+        name: updated.name,
+        description: updated.description || null,
+        active: updated.active,
+        created: updated.created,
+        default_price: updated.default_price
+          ? typeof updated.default_price === "string"
+            ? { id: updated.default_price }
+            : {
+                id: (updated.default_price as any).id,
+                unit_amount: (updated.default_price as any).unit_amount,
+                currency: (updated.default_price as any).currency,
+              }
+          : null,
+      },
+    };
+  } catch (error) {
+    console.error("Error toggling product active state:", error);
+    return {
+      success: false,
+      status: 500,
+      error: "Failed to update product",
+    };
+  }
+};
+
+// Delete product (Stripe will delete if not used, otherwise consider archiving)
+export const deleteStripeProduct = async (productId: string) => {
+  try {
+    const currentUser = await OnAuthenticateUser();
+    if (!currentUser.user) {
+      return { success: false, status: 401, error: "User not authenticated" };
+    }
+    if (!currentUser.user.stripeConnectId) {
+      return {
+        success: false,
+        status: 403,
+        error: "User does not have a connected Stripe account",
+      };
+    }
+    if (!productId) {
+      return { success: false, status: 400, error: "Product ID required" };
+    }
+    const stripeAccount = currentUser.user.stripeConnectId;
+    const deleted = await stripe.products.del(productId, { stripeAccount });
+    return {
+      success: deleted.deleted,
+      status: 200,
+      deleted: deleted.deleted,
+      id: deleted.id,
+    };
+  } catch (error: any) {
+    // If deletion fails (e.g., product has prices in use), surface message
+    console.error("Error deleting product:", error);
+    const message: string = error?.message || "";
+    // Common Stripe constraint: cannot delete product with user-created prices -> fallback to archive
+    if (
+      /cannot be deleted because it has one or more user-created prices/i.test(
+        message
+      )
+    ) {
+      try {
+        const currentUser = await OnAuthenticateUser();
+        if (!currentUser.user?.stripeConnectId) {
+          return {
+            success: false,
+            status: 403,
+            error: "Missing connected account for fallback archive",
+          };
+        }
+        const stripeAccount = currentUser.user.stripeConnectId;
+        // Archive product
+        const archived = await stripe.products.update(
+          productId,
+          { active: false },
+          { stripeAccount }
+        );
+        // Additionally mark all its prices inactive (best-effort)
+        const prices = await stripe.prices.list(
+          { product: productId, limit: 100 },
+          { stripeAccount }
+        );
+        await Promise.all(
+          prices.data
+            .filter((pr) => pr.active)
+            .map((pr) =>
+              stripe.prices.update(pr.id, { active: false }, { stripeAccount })
+            )
+        );
+        return {
+          success: true,
+          status: 200,
+          deleted: false,
+          archived: true,
+          id: archived.id,
+          message: "Product archived instead (could not be deleted).",
+        };
+      } catch (fallbackErr: any) {
+        console.error("Archive fallback failed:", fallbackErr);
+        return {
+          success: false,
+          status: 500,
+          error:
+            fallbackErr?.message ||
+            "Failed to delete or archive product. Try manually via Stripe dashboard.",
+        };
+      }
+    }
+    return {
+      success: false,
+      status: 500,
+      error:
+        message ||
+        "Failed to delete product (it may have active prices/subscriptions). Try deactivating instead.",
     };
   }
 };
