@@ -1,13 +1,12 @@
 import { OnAuthenticateUser } from "@/actions/auth";
 import { getWebinarsByPresenterId } from "@/actions/webinar";
 import WebinarsHeaderClient from "./WebinarsHeaderClient";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Webinar, WebinarStatusEnum } from "@prisma/client";
-import { HomeIcon, Users2, Webcam } from "lucide-react";
+
 import { redirect } from "next/navigation";
 import React from "react";
 import WebianrCard from "./_components/WebianrCard";
-import Link from "next/link";
 
 type Props = {
   searchParams: Promise<{

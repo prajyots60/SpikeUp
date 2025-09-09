@@ -11,7 +11,6 @@ const WebinarsHeaderClient = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const tab = searchParams.get("webinarStatus") || "all";
   const q = searchParams.get("q") || "";
 
   const updateSearch = (value: string) => {

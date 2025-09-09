@@ -2,8 +2,7 @@
 import React from "react";
 import { useVideoUpload } from "@/hooks/useVideoUpload";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Loader2, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { CheckCircle, X } from "lucide-react";
 
 interface CircularProgressProps {
   percentage: number;

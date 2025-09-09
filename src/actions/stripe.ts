@@ -86,11 +86,10 @@ export const getAllProductsFromStripeSettings = async () => {
       default_price:
         p.default_price && typeof p.default_price === "object"
           ? {
-              // @ts-ignore runtime shape from expansion
               id: p.default_price.id,
-              // @ts-ignore
+
               unit_amount: p.default_price.unit_amount,
-              // @ts-ignore
+
               currency: p.default_price.currency,
             }
           : null,

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PurpleIcon from "../PurpleIcon";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";

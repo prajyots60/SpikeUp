@@ -61,6 +61,7 @@ const ProductManager: React.FC = () => {
       }
     } catch (e) {
       toast.error("Unexpected error fetching products");
+      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -94,6 +95,7 @@ const ProductManager: React.FC = () => {
       }
     } catch (e) {
       toast.error("Unexpected error creating product");
+      console.error(e);
     } finally {
       setCreating(false);
     }
@@ -114,6 +116,7 @@ const ProductManager: React.FC = () => {
       }
     } catch (e) {
       toast.error("Unexpected error updating product");
+      console.error(e);
     } finally {
       setActingId(null);
     }
@@ -147,6 +150,7 @@ const ProductManager: React.FC = () => {
       }
     } catch (e) {
       toast.error("Unexpected error deleting product");
+      console.error(e);
     } finally {
       setActingId(null);
       setDeleteDialogOpen(false);

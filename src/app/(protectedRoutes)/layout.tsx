@@ -21,9 +21,8 @@ const Layout = async ({ children }: Props) => {
     if (Array.isArray(raw)) return raw;
     // If an API list object slipped through (object: 'list')
     // attempt to use its data property.
-    // @ts-ignore
+
     if (raw && typeof raw === "object" && raw.data && Array.isArray(raw.data)) {
-      // @ts-ignore
       return raw.data;
     }
     return [] as any[];

@@ -24,7 +24,6 @@ import {
   FileVideo,
   CheckCircle,
   Loader2,
-  Upload,
   Video,
   X,
 } from "lucide-react";
