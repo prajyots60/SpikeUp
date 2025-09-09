@@ -13,7 +13,21 @@ type Props = {
 const Layout = async ({ children }: Props) => {
   const userExists = await OnAuthenticateUser();
 
-  const stripeProducts = await getAllProductsFromStripe();
+  const stripeProductsResult = await getAllProductsFromStripe();
+  // Normalize to a plain array of simplified product objects
+  const normalizedStripeProducts = (() => {
+    const raw = stripeProductsResult?.products;
+    if (!raw) return [] as any[];
+    if (Array.isArray(raw)) return raw;
+    // If an API list object slipped through (object: 'list')
+    // attempt to use its data property.
+    // @ts-ignore
+    if (raw && typeof raw === "object" && raw.data && Array.isArray(raw.data)) {
+      // @ts-ignore
+      return raw.data;
+    }
+    return [] as any[];
+  })();
   const assistants = await getAllAssistants();
 
   if (!userExists.user) {
@@ -26,7 +40,7 @@ const Layout = async ({ children }: Props) => {
       <div className="flex flex-col w-full h-screen overflow-auto px-4 scrollbar-hide container mx-auto">
         <Header
           user={userExists.user}
-          stripeProducts={stripeProducts.products || []}
+          stripeProducts={normalizedStripeProducts}
           assistants={assistants.data || []}
         />
         <div className="flex-1 py-10">{children}</div>

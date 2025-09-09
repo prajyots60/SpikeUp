@@ -6,14 +6,28 @@ import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import PurpleIcon from "../PurpleIcon";
 import CreateWebinarButton from "../CreateWebinarButton";
-import Stripe from "stripe";
 import { StripeElements } from "../Stripe/Element";
 import SubscriptionModal from "../SubscriptionModal";
 import { Assistant } from "@vapi-ai/server-sdk/api";
 
+interface SimpleStripeProduct {
+  id: string;
+  name: string;
+  description?: string | null;
+  active?: boolean;
+  created?: number;
+  default_price?: {
+    id: string;
+    unit_amount?: number | null;
+    currency?: string;
+  } | null;
+  // Allow any extra fields silently (forward compatibility)
+  [key: string]: any;
+}
+
 type Props = {
   user: User;
-  stripeProducts: Stripe.Product[] | [];
+  stripeProducts: SimpleStripeProduct[] | [];
   assistants: Assistant[] | [];
 };
 

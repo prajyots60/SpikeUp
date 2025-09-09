@@ -12,12 +12,19 @@ import MultiStepForm from "./MultiStepForm";
 import BasicInfoStep from "./BasicInfoStep";
 import CTAStep from "./CTAStep";
 import AdditionalInfoStep from "./AdditionalInfoStep";
-import Stripe from "stripe";
 import SuccessStep from "./SuccessStep";
 import { Assistant } from "@vapi-ai/server-sdk/api";
 
+interface SimpleStripeProduct {
+  id: string;
+  name: string;
+  description?: string | null;
+  default_price?: any;
+  [key: string]: any;
+}
+
 type Props = {
-  stripeProducts: Stripe.Product[] | [];
+  stripeProducts: SimpleStripeProduct[] | [];
   assistants: Assistant[] | [];
 };
 

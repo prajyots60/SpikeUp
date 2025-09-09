@@ -13,6 +13,7 @@ import {
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
+import ProductManager from "@/components/ReusableComponents/Stripe/ProductManager";
 
 const page = async () => {
   const userExits = await OnAuthenticateUser();
@@ -114,6 +115,18 @@ const page = async () => {
                 Access detailed financial reporting and analytics.
               </li>
             </ul>
+          </div>
+        )}
+        {isConnected && (
+          <div className="mt-10 pt-6 border-t border-border space-y-6">
+            <div>
+              <h3 className="text-sm font-semibold mb-1">Products & Pricing</h3>
+              <p className="text-xs text-muted-foreground">
+                Create products & prices in your connected Stripe account. Use
+                the Price ID when attaching a price to a webinar CTA.
+              </p>
+            </div>
+            <ProductManager />
           </div>
         )}
       </div>

@@ -27,15 +27,12 @@ export const getAllProductsFromStripe = async () => {
       };
     }
 
-    const products = await stripe.products.list(
-      //{TODO: Uncomment when needed}
-      {
-        stripeAccount: currentUser.user.stripeConnectId,
-      }
-    );
+    const products = await stripe.products.list({
+      stripeAccount: currentUser.user.stripeConnectId,
+    });
 
     return {
-      products: products.data,
+      products: products,
       success: true,
       status: 200,
     };
@@ -45,6 +42,148 @@ export const getAllProductsFromStripe = async () => {
       error: "Failed to fetch products",
       status: 500,
       success: false,
+    };
+  }
+};
+
+export const getAllProductsFromStripeSettings = async () => {
+  try {
+    const currentUser = await OnAuthenticateUser();
+
+    if (!currentUser.user) {
+      return {
+        error: "User not authenticated",
+        status: 401,
+        success: false,
+      };
+    }
+
+    if (!currentUser.user.stripeConnectId) {
+      return {
+        error: "User does not have a connected Stripe account",
+        status: 403,
+        success: false,
+      };
+    }
+
+    const products = await stripe.products.list(
+      {
+        limit: 100,
+        expand: ["data.default_price"],
+      },
+      { stripeAccount: currentUser.user.stripeConnectId }
+    );
+
+    const sanitized = products.data.map((p) => ({
+      id: p.id,
+      name: p.name,
+      description: p.description || null,
+      active: p.active,
+      created: p.created,
+      default_price:
+        p.default_price && typeof p.default_price === "object"
+          ? {
+              // @ts-ignore runtime shape from expansion
+              id: p.default_price.id,
+              // @ts-ignore
+              unit_amount: p.default_price.unit_amount,
+              // @ts-ignore
+              currency: p.default_price.currency,
+            }
+          : null,
+    }));
+
+    return {
+      products: sanitized,
+      success: true,
+      status: 200,
+    };
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return {
+      error: "Failed to fetch products",
+      status: 500,
+      success: false,
+    };
+  }
+};
+
+// Create a product + default price on a connected account
+export const createStripeProduct = async (
+  name: string,
+  amount: number,
+  currency: string = "usd",
+  description?: string
+) => {
+  try {
+    const currentUser = await OnAuthenticateUser();
+    if (!currentUser.user) {
+      return { success: false, status: 401, error: "User not authenticated" };
+    }
+    if (!currentUser.user.stripeConnectId) {
+      return {
+        success: false,
+        status: 403,
+        error: "User does not have a connected Stripe account",
+      };
+    }
+
+    if (!name || !amount || amount <= 0) {
+      return {
+        success: false,
+        status: 400,
+        error: "Name and positive amount are required",
+      };
+    }
+
+    const stripeAccount = currentUser.user.stripeConnectId;
+
+    const product = await stripe.products.create(
+      {
+        name,
+        description,
+      },
+      { stripeAccount }
+    );
+
+    const price = await stripe.prices.create(
+      {
+        product: product.id,
+        currency: currency.toLowerCase(),
+        unit_amount: Math.round(amount * 100), // amount in dollars -> cents
+      },
+      { stripeAccount }
+    );
+
+    // Set default price for easier retrieval later
+    await stripe.products.update(
+      product.id,
+      { default_price: price.id },
+      { stripeAccount }
+    );
+
+    return {
+      success: true,
+      status: 201,
+      product: {
+        id: product.id,
+        name: product.name,
+        description: product.description || null,
+        active: product.active,
+        created: product.created,
+        default_price: {
+          id: price.id,
+          unit_amount: price.unit_amount,
+          currency: price.currency,
+        },
+      },
+    };
+  } catch (error) {
+    console.error("Error creating product:", error);
+    return {
+      success: false,
+      status: 500,
+      error: "Failed to create product",
     };
   }
 };

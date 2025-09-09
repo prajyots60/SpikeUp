@@ -14,11 +14,18 @@ import { useWebinarStore } from "@/store/useWebinarStore";
 import { CtaTypeEnum } from "@prisma/client";
 import { Search, X } from "lucide-react";
 import React, { useState } from "react";
-import Stripe from "stripe";
+
+interface SimpleStripeProduct {
+  id: string;
+  name: string;
+  description?: string | null;
+  default_price?: any;
+  [key: string]: any;
+}
 
 type Props = {
   assistants: any[];
-  stripeProducts: Stripe.Product[] | [];
+  stripeProducts: SimpleStripeProduct[] | [];
 };
 
 const CTAStep = ({ assistants, stripeProducts }: Props) => {
