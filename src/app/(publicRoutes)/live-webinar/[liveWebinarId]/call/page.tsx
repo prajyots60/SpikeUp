@@ -42,11 +42,7 @@ const page = async ({ params, searchParams }: Props) => {
     redirect(`/live-webinar/${liveWebinarId}?error=webinar-not-started`);
   }
 
-  if (
-    webinar.ctaType != "BOOK_A_CALL" ||
-    !webinar.aiAgentId ||
-    !webinar.priceId
-  ) {
+  if (webinar.ctaType != "BOOK_A_CALL" || !webinar.aiAgentId) {
     redirect(`/live-webinar/${liveWebinarId}?error=cannot-book-a-call`);
   }
 

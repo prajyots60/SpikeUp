@@ -4,16 +4,15 @@ import { getStripeOAuthLink } from "@/lib/stripe/utils";
 import {
   HomeIcon,
   LucideAlertCircle,
-  LucideArrowRight,
   LucideCheckCircle2,
   Settings,
   Sparkle,
   Star,
 } from "lucide-react";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 import ProductManager from "@/components/ReusableComponents/Stripe/ProductManager";
+import ConnectStripeButton from "@/components/ReusableComponents/Stripe/ConnectStripeButton";
 
 const page = async () => {
   const userExits = await OnAuthenticateUser();
@@ -78,17 +77,10 @@ const page = async () => {
               : "You will be redirected to Stripe to complete the connection."}
           </div>
 
-          <Link
-            href={stripeLink}
-            className={`px-5 p-2.5 rounded-md font-medium text-sm flex items-center gap-2 transition-colors ${
-              isConnected
-                ? "bg-muted hover:bg-muted/80 text-foreground"
-                : "bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white"
-            }`}
-          >
-            {isConnected ? "Reconnect " : "Connect Stripe "}
-            <LucideArrowRight size={16} />
-          </Link>
+          <ConnectStripeButton
+            stripeLink={stripeLink}
+            isConnected={isConnected}
+          />
         </div>
         {!isConnected && (
           <div className="mt-6 pt-6 border-t border-border">
