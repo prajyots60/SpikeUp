@@ -56,9 +56,9 @@ const WebinarSidebar: React.FC<WebinarSidebarProps> = ({ webinar }) => {
           </h3>
           <div className="flex items-center gap-4">
             <div className="relative">
-              <Avatar className="h-14 w-14 ring-2 ring-purple-500/30">
+              <Avatar className="h-14 w-14 ring-2 ring-indigo-500/30">
                 <AvatarImage src={webinar.presenter.profileImage} />
-                <AvatarFallback className="bg-gradient-to-br from-purple-600 to-blue-600 text-white">
+                <AvatarFallback className="bg-gradient-to-br from-indigo-600 to-blue-600 text-white">
                   <User className="h-6 w-6" />
                 </AvatarFallback>
               </Avatar>
@@ -68,7 +68,7 @@ const WebinarSidebar: React.FC<WebinarSidebarProps> = ({ webinar }) => {
               <p className="font-semibold text-white">
                 {webinar.presenter.name}
               </p>
-              <p className="text-sm text-purple-300">Webinar Host</p>
+              <p className="text-sm text-indigo-300">Webinar Host</p>
             </div>
           </div>
         </div>
@@ -76,7 +76,7 @@ const WebinarSidebar: React.FC<WebinarSidebarProps> = ({ webinar }) => {
 
       {/* CTA Section */}
       {webinar.ctaLabel && webinar.ctaUrl && (
-        <Card className="bg-gradient-to-br from-purple-600 via-blue-600 to-purple-700 border-none shadow-2xl shadow-purple-500/25">
+        <Card className="bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-700 border-none shadow-2xl shadow-indigo-500/25">
           <div className="p-6">
             <div className="text-center">
               <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-white/20 flex items-center justify-center">
@@ -85,12 +85,12 @@ const WebinarSidebar: React.FC<WebinarSidebarProps> = ({ webinar }) => {
               <h3 className="font-bold text-white mb-2">
                 Ready to take action?
               </h3>
-              <p className="text-purple-100 text-sm mb-4">
+              <p className="text-indigo-100 text-sm mb-4">
                 Don&apos;t let this opportunity slip away
               </p>
               <Button
                 asChild
-                className="w-full bg-white text-purple-600 hover:bg-gray-100 font-semibold shadow-lg transition-all duration-200 hover:scale-105"
+                className="w-full bg-white text-indigo-600 hover:bg-gray-100 font-semibold shadow-lg transition-all duration-200 hover:scale-105"
               >
                 <a
                   href={webinar.ctaUrl}

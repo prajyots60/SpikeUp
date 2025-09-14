@@ -307,7 +307,7 @@ const BasicInfoStep = () => {
                 : videoUploadStatus === "error"
                 ? "border-red-500 bg-red-500/10"
                 : isVideoUploading
-                ? "border-purple-500 bg-purple-500/10"
+                ? "border-indigo-500 bg-indigo-500/10"
                 : "border-gray-300 hover:border-gray-400"
             )}
           >
@@ -326,7 +326,7 @@ const BasicInfoStep = () => {
               {isVideoUploading ? (
                 <div className="space-y-4">
                   <div className="flex items-center justify-center">
-                    <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+                    <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm text-gray-600">
@@ -405,7 +405,7 @@ const BasicInfoStep = () => {
                   <div className="space-y-1">
                     <p className="text-sm font-medium">
                       Drag and drop your video here, or{" "}
-                      <span className="text-purple-600 hover:text-purple-700 cursor-pointer">
+                      <span className="text-indigo-600 hover:text-indigo-700 cursor-pointer">
                         browse
                       </span>
                     </p>

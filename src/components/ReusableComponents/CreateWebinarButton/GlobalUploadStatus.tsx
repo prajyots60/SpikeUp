@@ -48,14 +48,14 @@ const CircularProgress = ({
           fill="transparent"
           strokeDasharray={strokeDasharray}
           strokeDashoffset={strokeDashoffset}
-          className="text-purple-600 transition-all duration-300 ease-in-out"
+          className="text-indigo-600 transition-all duration-300 ease-in-out"
           strokeLinecap="round"
         />
       </svg>
 
       {/* Percentage text */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-xs font-medium text-purple-600">
+        <span className="text-xs font-medium text-indigo-600">
           {percentage}%
         </span>
       </div>

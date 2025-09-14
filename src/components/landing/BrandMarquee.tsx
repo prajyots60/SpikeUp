@@ -11,11 +11,11 @@ const logos = [
 ];
 
 const palettes: [string, string][] = [
-  ["#A78BFA", "#22D3EE"], // violet -> cyan
+  ["#6366F1", "#22D3EE"], // indigo -> cyan
   ["#F472B6", "#FB7185"], // pink -> rose
   ["#34D399", "#60A5FA"], // emerald -> blue
   ["#F59E0B", "#F472B6"], // amber -> pink
-  ["#10B981", "#8B5CF6"], // green -> violet
+  ["#10B981", "#4F46E5"], // green -> indigo
 ];
 
 export default function BrandMarquee() {
@@ -107,25 +107,39 @@ export default function BrandMarquee() {
                       }}
                     >
                       <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-background/70 border border-white/10 backdrop-blur-md shadow-sm transition-transform duration-300 group-hover:-translate-y-0.5">
-                        <img src={logo.path} alt={logo.name} className="h-6 w-auto" loading="lazy" />
-                        <span className="hidden sm:inline text-xs text-foreground/90">{logo.name}</span>
+                        <img
+                          src={logo.path}
+                          alt={logo.name}
+                          className="h-6 w-auto"
+                          loading="lazy"
+                        />
+                        <span className="hidden sm:inline text-xs text-foreground/90">
+                          {logo.name}
+                        </span>
                       </div>
                     </div>
                     <span
                       aria-hidden
                       className="pointer-events-none absolute -top-1 -left-1 size-1.5 rounded-full"
-                      style={{ background: `radial-gradient(circle, ${c1}, transparent 60%)` }}
+                      style={{
+                        background: `radial-gradient(circle, ${c1}, transparent 60%)`,
+                      }}
                     />
                     <span
                       aria-hidden
                       className="pointer-events-none absolute -bottom-1 -right-1 size-1.5 rounded-full"
-                      style={{ background: `radial-gradient(circle, ${c2}, transparent 60%)` }}
+                      style={{
+                        background: `radial-gradient(circle, ${c2}, transparent 60%)`,
+                      }}
                     />
                   </div>
                 );
               })}
             </div>
-            <div className="flex gap-10 items-center shrink-0" aria-hidden="true">
+            <div
+              className="flex gap-10 items-center shrink-0"
+              aria-hidden="true"
+            >
               {logos.map((logo, i) => {
                 const [c1, c2] = palettes[i % palettes.length];
                 return (
@@ -137,19 +151,30 @@ export default function BrandMarquee() {
                       }}
                     >
                       <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-background/70 border border-white/10 backdrop-blur-md shadow-sm transition-transform duration-300 group-hover:-translate-y-0.5">
-                        <img src={logo.path} alt={logo.name} className="h-6 w-auto" loading="lazy" />
-                        <span className="hidden sm:inline text-xs text-foreground/90">{logo.name}</span>
+                        <img
+                          src={logo.path}
+                          alt={logo.name}
+                          className="h-6 w-auto"
+                          loading="lazy"
+                        />
+                        <span className="hidden sm:inline text-xs text-foreground/90">
+                          {logo.name}
+                        </span>
                       </div>
                     </div>
                     <span
                       aria-hidden
                       className="pointer-events-none absolute -top-1 -left-1 size-1.5 rounded-full"
-                      style={{ background: `radial-gradient(circle, ${c1}, transparent 60%)` }}
+                      style={{
+                        background: `radial-gradient(circle, ${c1}, transparent 60%)`,
+                      }}
                     />
                     <span
                       aria-hidden
                       className="pointer-events-none absolute -bottom-1 -right-1 size-1.5 rounded-full"
-                      style={{ background: `radial-gradient(circle, ${c2}, transparent 60%)` }}
+                      style={{
+                        background: `radial-gradient(circle, ${c2}, transparent 60%)`,
+                      }}
                     />
                   </div>
                 );
@@ -157,7 +182,10 @@ export default function BrandMarquee() {
             </div>
           </div>
           {/* sheen overlay */}
-          <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+          <div
+            className="pointer-events-none absolute inset-0 overflow-hidden"
+            aria-hidden
+          >
             <div className="h-full w-1/3 bg-gradient-to-r from-transparent via-white/6 to-transparent [animation:sheen_6s_linear_infinite]" />
           </div>
         </div>

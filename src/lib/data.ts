@@ -1,4 +1,4 @@
-import { HomeIcon, Users, SettingsIcon } from "lucide-react";
+import { HomeIcon, Users, SettingsIcon, BarChart3 } from "lucide-react";
 import { CallStatusEnum } from "@prisma/client";
 import { Sparkle, Webcam } from "lucide-react";
 export const sidebarData = [
@@ -19,6 +19,12 @@ export const sidebarData = [
     title: "Leads",
     icon: Users,
     link: "/lead",
+  },
+  {
+    id: 31,
+    title: "Analytics",
+    icon: BarChart3,
+    link: "/analytics",
   },
   {
     id: 4,

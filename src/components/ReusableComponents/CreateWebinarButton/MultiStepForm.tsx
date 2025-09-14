@@ -102,11 +102,11 @@ const MultiStepForm = ({ steps, onComplete }: Props) => {
             thumbnailFile: undefined,
             // Remove XMLHttpRequest reference
             uploadXhr: undefined,
-          }
+          },
         };
 
         console.log("Sending cleaned form data:", cleanedFormData);
-        
+
         const result = await createWebinar(cleanedFormData);
         if (result.status === 200 && result.webinarId) {
           // SUCCESS: Don't clean up video - it's now part of the webinar
@@ -167,7 +167,7 @@ const MultiStepForm = ({ steps, onComplete }: Props) => {
                         animate={{
                           backgroundColor:
                             isCurrent || isCompleted
-                              ? "rgb(147, 51, 234)"
+                              ? "rgb(79, 70, 229)" /* indigo-600 */
                               : "rgb(31, 41, 55)", // slate-800
                           scale: [isCurrent && !isCompleted ? 0.8 : 1, 1],
                           transition: { duration: 0.3 },
@@ -225,7 +225,7 @@ const MultiStepForm = ({ steps, onComplete }: Props) => {
                             }}
                             animate={{
                               height: isPast || isCompleted ? "100%" : "0%",
-                              backgroundColor: "rgb(147, 51, 234)", // purple-600
+                              backgroundColor: "rgb(79, 70, 229)", // indigo-600
                             }}
                             transition={{ duration: 0.3, ease: "easeInOut" }}
                             style={{ width: "100%", height: "100%" }}

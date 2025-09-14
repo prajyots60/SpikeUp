@@ -38,7 +38,7 @@ const page = async () => {
       />
       <div className="w-full p-6 border border-input rounded-lg bg-background shadow-sm">
         <div className="flex items-center mb-4">
-          <div className="h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 flex items-center justify-center mr-4">
+          <div className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 to-blue-600 flex items-center justify-center mr-4">
             <Star className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -83,7 +83,7 @@ const page = async () => {
             className={`px-5 p-2.5 rounded-md font-medium text-sm flex items-center gap-2 transition-colors ${
               isConnected
                 ? "bg-muted hover:bg-muted/80 text-foreground"
-                : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
+                : "bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white"
             }`}
           >
             {isConnected ? "Reconnect " : "Connect Stripe "}

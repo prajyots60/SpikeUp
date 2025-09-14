@@ -32,7 +32,7 @@ const Page = () => {
         </div>
       </div>
 
-      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6 rounded-xl bg-background-10">
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 rounded-xl bg-background-10">
         <FeatureSectionLayout
           heading="See how far along are your potential customer"
           link="/lead"

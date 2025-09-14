@@ -287,7 +287,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-black">
               <div className="flex flex-col items-center gap-4">
-                <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
                 <span className="text-white text-lg font-medium">
                   Loading video...
                 </span>

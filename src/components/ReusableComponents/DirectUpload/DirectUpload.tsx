@@ -319,7 +319,7 @@ const DirectUpload: React.FC<DirectUploadProps> = ({
         className={cn(
           "relative border-2 border-dashed rounded-lg p-6 transition-all",
           isDragging
-            ? "border-purple-500 bg-purple-500/10"
+            ? "border-indigo-500 bg-indigo-500/10"
             : uploadStatus === "success"
             ? "border-green-500 bg-green-500/10"
             : uploadStatus === "error"
@@ -346,7 +346,7 @@ const DirectUpload: React.FC<DirectUploadProps> = ({
           {isUploading ? (
             <div className="space-y-4">
               <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
               </div>
               <div className="space-y-2">
                 <p className="text-sm text-gray-600">
@@ -423,7 +423,7 @@ const DirectUpload: React.FC<DirectUploadProps> = ({
               <div className="space-y-1">
                 <p className="text-sm font-medium">
                   Drag and drop your {fileType} here, or{" "}
-                  <span className="text-purple-600 hover:text-purple-700 cursor-pointer">
+                  <span className="text-indigo-600 hover:text-indigo-700 cursor-pointer">
                     browse
                   </span>
                 </p>

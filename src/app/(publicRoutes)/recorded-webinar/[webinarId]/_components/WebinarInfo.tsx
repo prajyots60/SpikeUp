@@ -27,7 +27,7 @@ const WebinarInfo: React.FC<WebinarInfoProps> = ({ webinar }) => {
             <Clock className="h-4 w-4" />
             <span className="text-sm">{webinar.duration} minutes</span>
           </div>
-          <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white border-none">
+          <Badge className="bg-gradient-to-r from-indigo-600 to-blue-600 text-white border-none">
             Recorded
           </Badge>
         </div>
@@ -53,7 +53,7 @@ const WebinarInfo: React.FC<WebinarInfoProps> = ({ webinar }) => {
         <Card className="bg-gray-900/30 border-gray-800/50 backdrop-blur-sm">
           <div className="p-6">
             <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
-              <div className="w-1 h-4 bg-purple-500 rounded-full"></div>
+              <div className="w-1 h-4 bg-indigo-500 rounded-full"></div>
               Description
             </h3>
             <p className="text-gray-300 leading-relaxed">
