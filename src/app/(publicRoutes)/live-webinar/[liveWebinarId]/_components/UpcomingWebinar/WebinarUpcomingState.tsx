@@ -19,6 +19,7 @@ type Props = {
 
 const WebinarUpcomingState = ({ webinar, currentUser }: Props) => {
   const [loading, setLoading] = useState(false);
+  const [canStartWebinar, setCanStartWebinar] = useState(false);
 
   const router = useRouter();
 
@@ -41,7 +42,7 @@ const WebinarUpcomingState = ({ webinar, currentUser }: Props) => {
       router.refresh();
     } catch (error) {
       console.error("Error starting webinar:", error);
-      toast.error("Failed to start webinar. Please try again.");
+      toast.error(error instanceof Error ? error.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -58,6 +59,7 @@ const WebinarUpcomingState = ({ webinar, currentUser }: Props) => {
           className="text-center"
           webinarId={webinar.id}
           webinarStatus={webinar.webinarStatus}
+          onComplete={() => setCanStartWebinar(true)}
         />
       </div>
       <div className="space-y-6 w-full h-full flex flex-col justify-center items-center">
@@ -74,11 +76,25 @@ const WebinarUpcomingState = ({ webinar, currentUser }: Props) => {
         {webinar?.webinarStatus === "SCHEDULED" ? (
           currentUser?.id === webinar?.presenterId ? (
             <Button
-              className="w-full max-w-[300px] font-semibold"
-              disabled
-              title="Start will be enabled when the waiting room opens"
+              className="w-full max-w-[300px] font-semibold cursor-pointer"
+              disabled={!canStartWebinar || loading}
+              title={
+                canStartWebinar
+                  ? "Click to start webinar"
+                  : "Start will be enabled when the waiting room opens"
+              }
+              onClick={
+                canStartWebinar && !loading ? handleStartWebinar : undefined
+              }
             >
-              Start Webinar
+              {loading ? (
+                <>
+                  <Loader2 className="animate-spin mr-2" />
+                  Starting Webinar...
+                </>
+              ) : (
+                "Start Webinar"
+              )}
             </Button>
           ) : (
             <WaitListComponent

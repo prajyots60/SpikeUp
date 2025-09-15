@@ -8,6 +8,7 @@ type Props = {
   className?: string;
   webinarId: string;
   webinarStatus: WebinarStatusEnum;
+  onComplete?: () => void;
 };
 
 const CountdownTimer = ({
@@ -15,6 +16,7 @@ const CountdownTimer = ({
   className,
   webinarId,
   webinarStatus,
+  onComplete,
 }: Props) => {
   const [isExpired, setIsExpired] = useState(false);
   const [timeLeft, setTimeLeft] = useState({
@@ -45,6 +47,7 @@ const CountdownTimer = ({
       if (difference <= 0) {
         if (!isExpired) {
           setIsExpired(true);
+          if (onComplete) onComplete();
 
           if (webinarStatus === WebinarStatusEnum.SCHEDULED) {
             const updateStatus = async () => {
@@ -95,7 +98,7 @@ const CountdownTimer = ({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [targetDate, webinarId, webinarStatus, isExpired]);
+  }, [targetDate, webinarId, webinarStatus, isExpired, onComplete]);
 
   return (
     <div className={cn("text-center", className)}>

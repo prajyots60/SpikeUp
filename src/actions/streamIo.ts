@@ -70,7 +70,9 @@ export const createAndStartStream = async (webinar: Webinar) => {
     });
 
     if (checkWebinar.length > 0) {
-      throw new Error("You already have a live webinar running");
+      throw new Error(
+        "You already have another live webinar running. Please end it before starting a new one."
+      );
     }
 
     const call = getStreamClient.video.call("livestream", webinar.id);
@@ -100,7 +102,9 @@ export const createAndStartStream = async (webinar: Webinar) => {
     };
   } catch (error) {
     console.error("Error starting stream:", error);
-    throw new Error("Failed to start stream");
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to start stream"
+    );
   }
 };
 
