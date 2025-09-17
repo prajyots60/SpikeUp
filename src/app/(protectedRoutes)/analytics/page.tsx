@@ -15,7 +15,6 @@ export default async function AnalyticsPage({
   const params = await searchParams;
   const days = Number(params?.days ?? 30);
 
-  // Provide webinars for filter select
   const webinars = await prismaClient.webinar.findMany({
     where: { presenterId: auth.user.id },
     select: { id: true, title: true },
