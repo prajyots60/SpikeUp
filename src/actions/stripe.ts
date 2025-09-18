@@ -19,6 +19,13 @@ export const getAllProductsFromStripe = async () => {
       };
     }
 
+    // Handle managed creators
+    if (currentUser.user.creatorType === "MANAGED_CREATOR") {
+      const { getManagedCreatorProducts } = await import("./managedStripe");
+      return await getManagedCreatorProducts();
+    }
+
+    // Handle connected creators
     if (!currentUser.user.stripeConnectId) {
       return {
         error: "User does not have a connected Stripe account",
@@ -61,6 +68,13 @@ export const getAllProductsFromStripeSettings = async () => {
       };
     }
 
+    // Handle managed creators
+    if (currentUser.user.creatorType === "MANAGED_CREATOR") {
+      const { getManagedCreatorProducts } = await import("./managedStripe");
+      return await getManagedCreatorProducts();
+    }
+
+    // Handle connected creators
     if (!currentUser.user.stripeConnectId) {
       return {
         error: "User does not have a connected Stripe account",
@@ -110,7 +124,7 @@ export const getAllProductsFromStripeSettings = async () => {
   }
 };
 
-// Create a product + default price on a connected account
+// Create a product + default price on a connected account or managed account
 export const createStripeProduct = async (
   name: string,
   amount: number,
@@ -122,6 +136,19 @@ export const createStripeProduct = async (
     if (!currentUser.user) {
       return { success: false, status: 401, error: "User not authenticated" };
     }
+
+    // Handle managed creators
+    if (currentUser.user.creatorType === "MANAGED_CREATOR") {
+      const { createManagedCreatorProduct } = await import("./managedStripe");
+      return await createManagedCreatorProduct(
+        name,
+        amount,
+        currency,
+        description
+      );
+    }
+
+    // Handle connected creators
     if (!currentUser.user.stripeConnectId) {
       return {
         success: false,
@@ -200,6 +227,14 @@ export const toggleStripeProductActive = async (
     if (!currentUser.user) {
       return { success: false, status: 401, error: "User not authenticated" };
     }
+
+    // Handle managed creators
+    if (currentUser.user.creatorType === "MANAGED_CREATOR") {
+      const { toggleManagedProductActive } = await import("./managedStripe");
+      return await toggleManagedProductActive(productId, makeActive);
+    }
+
+    // Handle connected creators
     if (!currentUser.user.stripeConnectId) {
       return {
         success: false,
@@ -426,6 +461,27 @@ export const createCheckoutLink = async (
       webinarId,
       bookCall
     );
+
+    // Try enhanced checkout that handles both connected and managed creators
+    const { createCheckoutLinkEnhanced } = await import("./managedStripe");
+
+    // Find creator by webinar
+    const webinar = await prismaClient.webinar.findUnique({
+      where: { id: webinarId },
+      include: { presenter: true },
+    });
+
+    if (webinar?.presenter) {
+      return await createCheckoutLinkEnhanced(
+        priceId,
+        webinar.presenter.id,
+        attendeeId,
+        webinarId,
+        bookCall
+      );
+    }
+
+    // Fallback to original implementation for backward compatibility
     const session = await stripe.checkout.sessions.create(
       {
         line_items: [

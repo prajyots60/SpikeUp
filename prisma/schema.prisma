@@ -35,23 +35,38 @@ enum CallStatusEnum {
   COMPLETED
 }
 
+enum CreatorTypeEnum {
+  CONNECTED_STRIPE  // Has own Stripe Connect account
+  MANAGED_CREATOR   // Uses platform Stripe account
+}
+
 model User {
-  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name             String    @db.VarChar(100)
-  clerkId          String    @unique
-  email            String    @unique
+  id               String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name             String          @db.VarChar(100)
+  clerkId          String          @unique
+  email            String          @unique
   profileImage     String
-  webinars         Webinar[] @relation("PresenterWebinars")
-  stripeConnectId  String?   @db.VarChar(255)
+  webinars         Webinar[]       @relation("PresenterWebinars")
+  stripeConnectId  String?         @db.VarChar(255)
   lastLoginAt      DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
   deletedAt        DateTime?
-  subscription     Boolean   @default(false)
-  stripeCustomerId String?   @db.VarChar(255)
+  subscription     Boolean         @default(false)
+  stripeCustomerId String?         @db.VarChar(255)
+  // New fields for managed creators
+  creatorType      CreatorTypeEnum @default(MANAGED_CREATOR)
+  isActive         Boolean         @default(true)
+  totalEarnings    Decimal         @default(0) @db.Decimal(10, 2)
+  pendingBalance   Decimal         @default(0) @db.Decimal(10, 2)
+  // Relations
+  products         Product[]       @relation("CreatorProducts")
+  earnings         Earning[]       @relation("CreatorEarnings")
+  payouts          Payout[]        @relation("CreatorPayouts")
 
   @@index([email])
   @@index([clerkId])
+  @@index([creatorType])
 }
 
 model Webinar {
@@ -121,4 +136,72 @@ model Attendance {
   @@unique([attendeeId, webinarId]) // ✅ This enforces 1 attendee per webinar
   @@index([webinarId])
   @@index([attendedType])
+}
+
+// New models for managed creators and earnings tracking
+model Product {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String    @db.VarChar(255)
+  description     String?   @db.Text
+  stripeProductId String    @db.VarChar(255)
+  stripePriceId   String?   @db.VarChar(255)
+  price           Decimal   @db.Decimal(10, 2)
+  currency        String    @default("usd") @db.VarChar(3)
+  isActive        Boolean   @default(true)
+  creatorId       String    @db.Uuid
+  creator         User      @relation("CreatorProducts", fields: [creatorId], references: [id], onDelete: Cascade)
+  earnings        Earning[] @relation("ProductEarnings")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([creatorId])
+  @@index([stripeProductId])
+  @@index([isActive])
+}
+
+model Earning {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  amount            Decimal  @db.Decimal(10, 2)
+  currency          String   @default("usd") @db.VarChar(3)
+  platformFee       Decimal  @default(0) @db.Decimal(10, 2)
+  netAmount         Decimal  @db.Decimal(10, 2) // amount - platformFee
+  stripePaymentId   String?  @db.VarChar(255)
+  stripeSessionId   String?  @db.VarChar(255)
+  productId         String?  @db.Uuid
+  product           Product? @relation("ProductEarnings", fields: [productId], references: [id])
+  creatorId         String   @db.Uuid
+  creator           User     @relation("CreatorEarnings", fields: [creatorId], references: [id], onDelete: Cascade)
+  webinarId         String?  @db.Uuid
+  attendeeId        String?  @db.Uuid
+  isPaid            Boolean  @default(false)
+  paidAt            DateTime?
+  payoutId          String?  @db.Uuid
+  payout            Payout?  @relation("PayoutEarnings", fields: [payoutId], references: [id])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([creatorId])
+  @@index([productId])
+  @@index([isPaid])
+  @@index([stripePaymentId])
+}
+
+model Payout {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  amount          Decimal   @db.Decimal(10, 2)
+  currency        String    @default("usd") @db.VarChar(3)
+  method          String    @default("manual") @db.VarChar(50) // manual, stripe_transfer, bank_transfer
+  status          String    @default("pending") @db.VarChar(50) // pending, processing, completed, failed
+  stripeTransferId String?  @db.VarChar(255)
+  creatorId       String    @db.Uuid
+  creator         User      @relation("CreatorPayouts", fields: [creatorId], references: [id], onDelete: Cascade)
+  earnings        Earning[] @relation("PayoutEarnings")
+  notes           String?   @db.Text
+  processedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([creatorId])
+  @@index([status])
+  @@index([processedAt])
 }

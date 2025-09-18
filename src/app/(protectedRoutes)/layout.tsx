@@ -3,6 +3,7 @@ import { getAllProductsFromStripe } from "@/actions/stripe";
 import { getAllAssistants } from "@/actions/vapi";
 import Header from "@/components/ReusableComponents/LayoutComponents/Header";
 import Sidebar from "@/components/ReusableComponents/LayoutComponents/Sidebar";
+import { serializeUserWithDecimals } from "@/lib/utils/serialize";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -33,12 +34,15 @@ const Layout = async ({ children }: Props) => {
     redirect("/sign-in");
   }
 
+  // Serialize user data to prevent Decimal issues in client components
+  const serializedUser = serializeUserWithDecimals(userExists.user);
+
   return (
     <div className="flex w-full h-min-screen">
       <Sidebar />
       <div className="flex flex-col w-full h-screen overflow-auto px-4 scrollbar-hide container mx-auto">
         <Header
-          user={userExists.user}
+          user={serializedUser}
           stripeProducts={normalizedStripeProducts}
           assistants={assistants.data || []}
         />

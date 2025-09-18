@@ -6,9 +6,10 @@ import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import PurpleIcon from "../PurpleIcon";
 import CreateWebinarButton from "../CreateWebinarButton";
-import { StripeElements } from "../Stripe/Element";
+
 import SubscriptionModal from "../SubscriptionModal";
 import { Assistant } from "@vapi-ai/server-sdk/api";
+import { StripeElements } from "@/components/ReusableComponents/Stripe/Element";
 
 interface SimpleStripeProduct {
   id: string;

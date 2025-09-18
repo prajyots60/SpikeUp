@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 interface StripePrice {
-  id: string;
+  id: string | null;
   unit_amount: number | null;
   currency: string;
 }
@@ -55,7 +55,14 @@ const ProductManager: React.FC = () => {
       setLoading(true);
       const res = await getAllProductsFromStripeSettings();
       if (res.success) {
-        setProducts(res.products || []);
+        const productsData = res.products;
+        if (Array.isArray(productsData)) {
+          setProducts(productsData);
+        } else if (productsData && Array.isArray(productsData.data)) {
+          setProducts(productsData.data);
+        } else {
+          setProducts([]);
+        }
       } else {
         toast.error(res.error || "Failed to fetch products");
       }

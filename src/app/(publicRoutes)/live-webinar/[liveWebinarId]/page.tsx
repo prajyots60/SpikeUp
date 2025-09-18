@@ -4,6 +4,7 @@ import React from "react";
 import RenderWebinar from "./_components/RenderWebinar";
 import { WebinarWithPresenter, StreamCallRecording } from "@/lib/type";
 import { redirect } from "next/navigation";
+import { serializeUserWithDecimals } from "@/lib/utils/serialize";
 
 type Props = {
   params: Promise<{
@@ -62,7 +63,7 @@ const page = async ({ params, searchParams }: Props) => {
   return (
     <div className="w-full min-h-screen mx-auto">
       <RenderWebinar
-        user={checkUser.user || null}
+        user={checkUser.user ? serializeUserWithDecimals(checkUser.user) : null}
         apiKey={apiKey}
         error={error}
         webinar={webinarData as WebinarWithPresenter}

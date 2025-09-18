@@ -217,7 +217,14 @@ const CTAStep = ({ assistants, stripeProducts }: Props) => {
                   stripeProducts.map((product) => (
                     <SelectItem
                       key={product.id}
-                      value={product?.default_price?.toString() || ""} // Ensure value is a string
+                      value={
+                        typeof product.default_price === "object" &&
+                        product.default_price?.id
+                          ? product.default_price.id
+                          : typeof product.default_price === "string"
+                          ? product.default_price
+                          : ""
+                      }
                       className="!bg-background/50 hover:!bg-white/10"
                     >
                       {product.name}

@@ -147,13 +147,30 @@ const AutoConnectCall = ({
 
   const checkOutLink = async () => {
     try {
-      if (!webinar?.priceId || !webinar?.presenter?.stripeConnectId) {
-        return toast.error("No pricing information available");
+      // Check if we have a priceId
+      if (!webinar?.priceId) {
+        return toast.error("No price configured for this webinar.");
       }
 
+      // For connected creators, we need stripeConnectId
+      // For managed creators, we don't need stripeConnectId (they use platform account)
+      const isConnectedCreator =
+        webinar.presenter.creatorType === "CONNECTED_STRIPE";
+      const isManagedCreator =
+        webinar.presenter.creatorType === "MANAGED_CREATOR";
+
+      if (isConnectedCreator && !webinar.presenter.stripeConnectId) {
+        return toast.error("Presenter's Stripe account is not connected.");
+      }
+
+      if (!isConnectedCreator && !isManagedCreator) {
+        return toast.error("Invalid creator account type.");
+      }
+
+      // Use the enhanced checkout function that handles both types
       const session = await createCheckoutLink(
         webinar.priceId,
-        webinar.presenter.stripeConnectId,
+        webinar.presenter.stripeConnectId || "", // Will be empty for managed creators, which is fine
         userId,
         webinar.id
       );

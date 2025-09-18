@@ -101,6 +101,7 @@ export type RecordedWebinarData = Webinar & {
     name: string;
     stripeConnectId: string | null;
     profileImage: string;
+    creatorType: "CONNECTED_STRIPE" | "MANAGED_CREATOR";
   };
 };
 
