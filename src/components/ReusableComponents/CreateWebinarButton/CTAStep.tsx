@@ -29,10 +29,9 @@ type Props = {
 };
 
 const CTAStep = ({ assistants, stripeProducts }: Props) => {
-  const { formData, updateCTAField, getStepValidationErrors } =
-    useWebinarStore();
+  const { formData, updateCTAField } = useWebinarStore();
 
-  const errors = getStepValidationErrors("cta");
+  // const errors = getStepValidationErrors("cta");
 
   const { ctaLabel, ctaType, tags, aiAgent, priceId } = formData.cta;
 
@@ -76,11 +75,9 @@ const CTAStep = ({ assistants, stripeProducts }: Props) => {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <Label
-          htmlFor="ctaLabel"
-          className={errors.ctaLabel ? "text-red-400" : ""}
-        >
-          CTA Label <span className="text-red-400">*</span>
+        <Label htmlFor="ctaLabel">
+          CTA Label{" "}
+          <span className="text-muted-foreground text-xs">(optional)</span>
         </Label>
         <Input
           id="ctaLabel"
@@ -88,18 +85,13 @@ const CTAStep = ({ assistants, stripeProducts }: Props) => {
           value={ctaLabel || ""}
           placeholder="Enter CTA label"
           onChange={handleChange}
-          className={cn(
-            "!bg-background/50 border border-input",
-            errors.ctaLabel && "border-red-400 focus-visible:ring-red-400"
-          )}
+          className={cn("!bg-background/50 border border-input")}
         />
-        {errors.ctaLabel && (
-          <p className="text-red-400 text-sm mt-1">{errors.ctaLabel}</p>
-        )}
+        {/* ctaLabel is optional */}
       </div>
       <div className="space-y-2">
         <Label htmlFor="tags">
-          Tags <span className="text-red-400">*</span>
+          Tags <span className="text-muted-foreground text-xs">(optional)</span>
         </Label>
         <Input
           id="tags"

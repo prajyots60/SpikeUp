@@ -1,5 +1,3 @@
-import { Decimal } from "@prisma/client/runtime/library";
-
 /**
  * Utility function to serialize Prisma Decimal objects to numbers
  * This is needed when passing data from Server Components to Client Components

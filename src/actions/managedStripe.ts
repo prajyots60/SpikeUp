@@ -5,7 +5,6 @@ import { stripe } from "@/lib/stripe/index";
 import { prismaClient } from "@/lib/prismaClient";
 import { changeAttendanceType } from "./attendance";
 
-// Create product for managed creators (uses platform Stripe account)
 export const createManagedCreatorProduct = async (
   name: string,
   amount: number,
@@ -34,7 +33,6 @@ export const createManagedCreatorProduct = async (
       };
     }
 
-    // Create product on platform Stripe account with creator metadata
     const product = await stripe.products.create({
       name,
       description,
@@ -60,7 +58,6 @@ export const createManagedCreatorProduct = async (
       default_price: price.id,
     });
 
-    // Save to database
     const dbProduct = await prismaClient.product.create({
       data: {
         name,
@@ -98,7 +95,6 @@ export const createManagedCreatorProduct = async (
   }
 };
 
-// Get products for managed creators
 export const getManagedCreatorProducts = async () => {
   try {
     const currentUser = await OnAuthenticateUser();
@@ -170,7 +166,6 @@ export const getManagedCreatorProducts = async () => {
   }
 };
 
-// Enhanced checkout creation that handles both connected and managed creators
 export const createCheckoutLinkEnhanced = async (
   priceId: string,
   creatorId: string,
@@ -196,7 +191,7 @@ export const createCheckoutLinkEnhanced = async (
       };
     }
 
-    let sessionConfig: any = {
+    const sessionConfig: any = {
       line_items: [
         {
           price: priceId,
@@ -264,7 +259,6 @@ export const createCheckoutLinkEnhanced = async (
   }
 };
 
-// Toggle managed product status
 export const toggleManagedProductActive = async (
   productId: string,
   makeActive: boolean
@@ -292,10 +286,10 @@ export const toggleManagedProductActive = async (
     });
 
     // Update in database
-    const updatedProduct = await prismaClient.product.update({
-      where: { id: product.id },
-      data: { isActive: makeActive },
-    });
+    // const updatedProduct = await prismaClient.product.update({
+    //   where: { id: product.id },
+    //   data: { isActive: makeActive },
+    // });
 
     return {
       success: true,
@@ -327,7 +321,6 @@ export const toggleManagedProductActive = async (
   }
 };
 
-// Record earnings for managed creators (called from webhook)
 export const recordManagedCreatorEarning = async (
   paymentIntent: any,
   session?: any

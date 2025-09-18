@@ -16,21 +16,13 @@ export const validateBasicInfo = (data: {
 }): ValidationResult => {
   const errors: ValidationErrors = {};
 
+  // Only webinarName is required; others are optional with defaults handled elsewhere
   if (!data.webinarName?.trim()) {
     errors.webinarName = "Webinar name is required";
   }
 
-  if (!data.description?.trim()) {
-    errors.description = "Description is required";
-  }
-
-  if (!data.date) {
-    errors.date = "Date is required";
-  }
-
-  if (!data.time?.trim()) {
-    errors.time = "Time is required";
-  } else {
+  // If time is provided, validate format; otherwise allow it to be omitted
+  if (data.time?.trim()) {
     const timeRegex = /^(0?[1-9]|1[0-2]):[0-5][0-9]$/;
     if (!timeRegex.test(data.time)) {
       errors.time = "Time must be in the format HH:MM ";
@@ -51,14 +43,7 @@ export const validateCTA = (data: {
 }): ValidationResult => {
   const errors: ValidationErrors = {};
 
-  if (!data.ctaLabel?.trim()) {
-    errors.ctaLabel = "CTA label is required";
-  }
-
-  if (!data.tags?.length) {
-    errors.tags = "Tags are required";
-  }
-
+  // Only ensure a CTA type exists; others are optional
   if (!data.ctaType) {
     errors.ctaType = "CTA type is required";
   }

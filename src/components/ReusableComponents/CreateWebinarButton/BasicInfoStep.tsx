@@ -183,11 +183,9 @@ const BasicInfoStep = () => {
         )}
       </div>
       <div className="space-y-2">
-        <Label
-          htmlFor="description"
-          className={errors.description ? "text-red-400" : ""}
-        >
-          Description <span className="text-red-400">*</span>
+        <Label htmlFor="description" className="">
+          Description{" "}
+          <span className="text-muted-foreground text-xs">(optional)</span>
         </Label>
         <Textarea
           id="description"
@@ -195,21 +193,17 @@ const BasicInfoStep = () => {
           value={description || ""}
           onChange={handleChange}
           placeholder="Enter webinar description"
-          className={cn(
-            "!bg-background/50 border border-input",
-            errors.description && "border-red-400 focus-visible:ring-red-400"
-          )}
+          className={cn("!bg-background/50 border border-input")}
           rows={3}
         >
-          {errors.description && (
-            <p className="text-sm text-red-400">{errors.description}</p>
-          )}
+          {/* description is optional */}
         </Textarea>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="date" className={errors.date ? "text-red-400" : ""}>
-            Date <span className="text-red-400">*</span>
+          <Label htmlFor="date" className="">
+            Date{" "}
+            <span className="text-muted-foreground text-xs">(optional)</span>
           </Label>
           <Popover>
             <PopoverTrigger asChild>
@@ -217,8 +211,7 @@ const BasicInfoStep = () => {
                 variant={"outline"}
                 className={cn(
                   "w-full justify-start text-left font-normal !bg-background/50 border border-input",
-                  !date && "text-gray-400",
-                  errors.date && "border-red-400 focus-visible:ring-red-400"
+                  !date && "text-gray-400"
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
@@ -240,11 +233,12 @@ const BasicInfoStep = () => {
               />
             </PopoverContent>
           </Popover>
-          {errors.date && <p className="text-sm text-red-400">{errors.date}</p>}
+          {/* date is optional */}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="time" className={errors.time ? "text-red-400" : ""}>
-            Time <span className="text-red-400">*</span>
+          <Label htmlFor="time" className="">
+            Time{" "}
+            <span className="text-muted-foreground text-xs">(optional)</span>
           </Label>
           <div className="flex gap-2">
             <div className="relative flex-1">
@@ -255,11 +249,9 @@ const BasicInfoStep = () => {
                 value={time || ""}
                 placeholder="12:00"
                 onChange={handleChange}
-                className={cn(
-                  "pl-10 !bg-background/50 border border-input",
-                  errors.time && "border-red-400 focus-visible:ring-red-400"
-                )}
+                className={cn("pl-10 !bg-background/50 border border-input")}
               />
+              {/* time is optional unless provided with invalid format */}
               {errors.time && (
                 <p className="text-sm text-red-400">{errors.time}</p>
               )}
@@ -277,9 +269,7 @@ const BasicInfoStep = () => {
               </SelectContent>
             </Select>
           </div>
-          {errors.timeFormat && (
-            <p className="text-sm text-red-400">{errors.timeFormat}</p>
-          )}
+          {/* timeFormat is derived from time; optional */}
         </div>
       </div>
 

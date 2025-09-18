@@ -15,7 +15,7 @@ const Layout = async ({ children }: Props) => {
   const userExists = await OnAuthenticateUser();
 
   const stripeProductsResult = await getAllProductsFromStripe();
-  // Normalize to a plain array of simplified product objects
+
   const normalizedStripeProducts = (() => {
     const raw = stripeProductsResult?.products;
     if (!raw) return [] as any[];

@@ -31,27 +31,27 @@ export const createWebinar = async (formData: WebinarFormState) => {
     if (!formData.basicInfo.webinarName) {
       return { status: 400, message: "Webinar name is required" };
     }
-
-    if (!formData.basicInfo.date) {
-      return { status: 400, message: "Date is required" };
-    }
-    if (!formData.basicInfo.time) {
-      return { status: 400, message: "Time is required" };
-    }
-
-    // Expect date as YYYY-MM-DD (IST calendar) from client; combine to a UTC instant
-    const combinedDateTime = combineISTDateTimeToUTC(
-      String(formData.basicInfo.date),
-      formData.basicInfo.time,
-      formData.basicInfo.timeFormat || "AM"
-    );
-
-    const now = new Date();
-    if (combinedDateTime < now) {
-      return {
-        status: 400,
-        message: "Webinar date and time can not be in the past",
-      };
+    // If date or time is missing, default to 24 hours from now, else combine user-provided IST date+time
+    let combinedDateTime: Date;
+    if (!formData.basicInfo.date || !formData.basicInfo.time) {
+      const defaultDate = new Date();
+      defaultDate.setDate(defaultDate.getDate() + 1);
+      defaultDate.setSeconds(0, 0);
+      combinedDateTime = defaultDate;
+    } else {
+      // Expect date as YYYY-MM-DD (IST calendar) from client; combine to a UTC instant
+      combinedDateTime = combineISTDateTimeToUTC(
+        String(formData.basicInfo.date),
+        formData.basicInfo.time,
+        formData.basicInfo.timeFormat || "AM"
+      );
+      const now = new Date();
+      if (combinedDateTime < now) {
+        return {
+          status: 400,
+          message: "Webinar date and time can not be in the past",
+        };
+      }
     }
 
     const webinar = await prismaClient.webinar.create({

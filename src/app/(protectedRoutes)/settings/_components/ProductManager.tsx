@@ -64,7 +64,7 @@ const ProductManager: React.FC = () => {
           setProducts([]);
         }
       } else {
-        toast.error(res.error || "Failed to fetch products");
+        toast.error("error" in res ? res.error : "Failed to fetch products");
       }
     } catch (e) {
       toast.error("Unexpected error fetching products");
@@ -98,7 +98,7 @@ const ProductManager: React.FC = () => {
         setDescription("");
         await fetchProducts();
       } else {
-        toast.error(res.error || "Failed to create");
+        toast.error("error" in res ? res.error : "Failed to create");
       }
     } catch (e) {
       toast.error("Unexpected error creating product");
