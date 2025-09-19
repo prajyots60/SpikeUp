@@ -31,6 +31,12 @@ import React from "react";
 import { toast } from "sonner";
 import { useVideoUpload } from "@/hooks/useVideoUpload";
 import { Progress } from "@/components/ui/progress";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const BasicInfoStep = () => {
   const { formData, updateBasicInfoField, getStepValidationErrors } =
@@ -159,7 +165,7 @@ const BasicInfoStep = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
       <div className="space-y-2">
         <Label
           htmlFor="webinarName"
@@ -273,145 +279,166 @@ const BasicInfoStep = () => {
         </div>
       </div>
 
-      {/* Video Upload Section */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 text-sm text-gray-600">
-          <FileVideo className="w-4 h-4" />
-          <span>Upload a video to make this webinar pre-recorded</span>
-          {isPreRecorded && (
-            <span className="text-green-600 font-medium">
-              (Pre-recorded mode)
-            </span>
-          )}
-        </div>
-
-        {/* Custom Video Upload Component */}
-        <div className="space-y-4">
-          <Label className="text-sm font-medium">Upload Video File</Label>
-
-          <div
-            className={cn(
-              "relative border-2 border-dashed rounded-lg p-6 transition-all",
-              videoUploadStatus === "success"
-                ? "border-green-500 bg-green-500/10"
-                : videoUploadStatus === "error"
-                ? "border-red-500 bg-red-500/10"
-                : isVideoUploading
-                ? "border-indigo-500 bg-indigo-500/10"
-                : "border-gray-300 hover:border-gray-400"
-            )}
-          >
-            {/* File Input - Only show when not uploading */}
-            {!isVideoUploading && (
-              <input
-                type="file"
-                accept="video/mp4,video/webm,video/quicktime,video/x-msvideo,video/avi,.mp4,.webm,.mov,.avi"
-                onChange={handleFileInputChange}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              />
-            )}
-
-            {/* Upload Content */}
-            <div className="text-center">
-              {isVideoUploading ? (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-center">
-                    <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-sm text-gray-600">
-                      Uploading {videoFile?.name}...
-                    </p>
-                    <Progress
-                      value={videoUploadProgress.percentage}
-                      className="w-full"
-                    />
-                    <p className="text-xs text-gray-500">
-                      {formatFileSize(videoUploadProgress.loaded)} /{" "}
-                      {formatFileSize(videoUploadProgress.total)} (
-                      {videoUploadProgress.percentage}%)
-                    </p>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={async () => {
-                        await cancelVideoUpload();
-                      }}
-                      className="mt-2"
-                    >
-                      Cancel Upload
-                    </Button>
-                  </div>
+      {/* Video Upload Section (Collapsible) */}
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="video-upload">
+          <AccordionTrigger className="text-sm !no-underline hover:bg-muted/40 rounded-md px-3 py-2 transition-colors data-[state=open]:bg-muted/60">
+            <div className="flex flex-wrap items-center gap-2 text-left">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-md bg-indigo-500/10 border border-indigo-500/30">
+                  <FileVideo className="w-4 h-4 text-indigo-500" />
                 </div>
-              ) : videoUploadStatus === "success" && uploadedVideoUrl ? (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-center text-green-600">
-                    <CheckCircle className="w-8 h-8" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium text-green-700">
-                      Upload successful!
-                    </p>
-                    <p className="text-xs text-gray-600">{videoFile?.name}</p>
-                    <p className="text-xs text-gray-500">
-                      {videoFile ? formatFileSize(videoFile.size) : ""}
-                    </p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={async () => await clearVideoUpload()}
-                    className="mt-2"
-                  >
-                    <X className="w-4 h-4 mr-1" />
-                    Clear
-                  </Button>
-                </div>
-              ) : videoUploadStatus === "error" ? (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-center text-red-600">
-                    <X className="w-8 h-8" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium text-red-700">
-                      Upload failed
-                    </p>
-                    <p className="text-xs text-gray-600">{videoFile?.name}</p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={async () => await clearVideoUpload()}
-                    className="mt-2"
-                  >
-                    Try Again
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-center text-gray-400">
-                    <Video className="w-8 h-8" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium">
-                      Drag and drop your video here, or{" "}
-                      <span className="text-indigo-600 hover:text-indigo-700 cursor-pointer">
-                        browse
-                      </span>
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Max file size: 500MB • Supports: MP4, WebM, MOV, AVI
-                    </p>
-                    <p className="text-xs text-amber-600">
-                      ⚠️ MKV files are not supported for web playback
-                    </p>
-                  </div>
-                </div>
+                <span className="font-medium">
+                  Pre-recorded Video (optional)
+                </span>
+              </div>
+              {isPreRecorded && (
+                <span className="text-green-600 text-xs font-medium">
+                  (Pre-recorded mode)
+                </span>
+              )}
+              {isVideoUploading && (
+                <span className="text-indigo-600 text-xs">Uploading...</span>
+              )}
+              {videoUploadStatus === "success" && (
+                <span className="text-green-600 text-xs flex items-center gap-1">
+                  <CheckCircle className="w-3 h-3" /> Uploaded
+                </span>
+              )}
+              {videoUploadStatus === "error" && (
+                <span className="text-red-600 text-xs">Failed</span>
               )}
             </div>
-          </div>
-        </div>
-      </div>
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="space-y-4 mt-2">
+              <Label className="text-sm font-medium">Upload Video File</Label>
+              <div
+                className={cn(
+                  "relative border-2 border-dashed rounded-xl p-6 transition-all group bg-gradient-to-br from-background to-muted/30 backdrop-blur-sm",
+                  videoUploadStatus === "success"
+                    ? "border-green-500/70 bg-green-500/10"
+                    : videoUploadStatus === "error"
+                    ? "border-red-500/70 bg-red-500/10"
+                    : isVideoUploading
+                    ? "border-indigo-500/70 bg-indigo-500/10 animate-pulse"
+                    : "border-border/60 hover:border-indigo-400/70 hover:bg-indigo-500/5"
+                )}
+              >
+                {!isVideoUploading && (
+                  <input
+                    type="file"
+                    accept="video/mp4,video/webm,video/quicktime,video/x-msvideo,video/avi,.mp4,.webm,.mov,.avi"
+                    onChange={handleFileInputChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                )}
+                <div className="text-center">
+                  {isVideoUploading ? (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-center">
+                        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-sm text-gray-600">
+                          Uploading {videoFile?.name}...
+                        </p>
+                        <Progress
+                          value={videoUploadProgress.percentage}
+                          className="w-full"
+                        />
+                        <p className="text-xs text-gray-500">
+                          {formatFileSize(videoUploadProgress.loaded)} /{" "}
+                          {formatFileSize(videoUploadProgress.total)} (
+                          {videoUploadProgress.percentage}%)
+                        </p>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={async () => {
+                            await cancelVideoUpload();
+                          }}
+                          className="mt-2"
+                        >
+                          Cancel Upload
+                        </Button>
+                      </div>
+                    </div>
+                  ) : videoUploadStatus === "success" && uploadedVideoUrl ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-center text-green-600">
+                        <CheckCircle className="w-8 h-8" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-green-700">
+                          Upload successful!
+                        </p>
+                        <p className="text-xs text-gray-600">
+                          {videoFile?.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {videoFile ? formatFileSize(videoFile.size) : ""}
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={async () => await clearVideoUpload()}
+                        className="mt-2"
+                      >
+                        <X className="w-4 h-4 mr-1" />
+                        Clear
+                      </Button>
+                    </div>
+                  ) : videoUploadStatus === "error" ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-center text-red-600">
+                        <X className="w-8 h-8" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-red-700">
+                          Upload failed
+                        </p>
+                        <p className="text-xs text-gray-600">
+                          {videoFile?.name}
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={async () => await clearVideoUpload()}
+                        className="mt-2"
+                      >
+                        Try Again
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-center text-gray-400 group-hover:text-indigo-500 transition-colors">
+                        <Video className="w-8 h-8" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium">
+                          Drag and drop your video here, or{" "}
+                          <span className="text-indigo-600 hover:text-indigo-700 cursor-pointer underline-offset-2 group-hover:underline">
+                            browse
+                          </span>
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Max file size: 500MB • Supports: MP4, WebM, MOV, AVI
+                        </p>
+                        <p className="text-xs text-amber-600">
+                          ⚠️ MKV files are not supported for web playback
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 };
