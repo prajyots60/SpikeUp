@@ -1,47 +1,26 @@
-# syntax=docker.io/docker/dockerfile:1
-
-FROM node:20-alpine AS base
-
-# Install dependencies only when needed
-FROM base AS deps
-RUN apk add --no-cache libc6-compat curl bash
-
+# Stage 1: Build Next.js app
+FROM node:20-alpine AS builder
 WORKDIR /app
 
-COPY package.json ./       
-COPY prisma ./prisma             
+COPY package*.json ./
+RUN npm install --frozen-lockfile
 
-RUN npm install --frozen-lockfile --legacy-peer-deps
-
-# Rebuild the source code only when needed
-FROM base AS builder
-RUN apk add --no-cache libc6-compat curl bash
-
-WORKDIR /app
-
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/prisma ./prisma 
 COPY . .
+RUN npm run build
 
-RUN npx prisma generate && npm run build
-
-# Production image
-FROM base AS runner
+# Stage 2: Run Next.js in production
+FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
+# Copy necessary files from builder
 COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
 
-USER nextjs
-
+# Next.js listens on port 3000
 EXPOSE 3000
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
