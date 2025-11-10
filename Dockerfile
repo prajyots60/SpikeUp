@@ -2,10 +2,16 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# Copy package files
 COPY package*.json ./
-RUN npm install --frozen-lockfile
 
+# Use legacy peer deps to avoid dependency conflicts
+RUN npm install --legacy-peer-deps --frozen-lockfile
+
+# Copy the rest of the files
 COPY . .
+
+# Build the Next.js app
 RUN npm run build
 
 # Stage 2: Run Next.js in production
